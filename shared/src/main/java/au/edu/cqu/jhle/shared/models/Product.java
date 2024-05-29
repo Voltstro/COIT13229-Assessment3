@@ -1,6 +1,8 @@
 package au.edu.cqu.jhle.shared.models;
 
-public class Product {
+import java.io.Serializable;
+
+public class Product implements Serializable {
     public Product(int id, String name, String unit, Double price, String ingredients) {
         this.id = id;
         this.name = name;
