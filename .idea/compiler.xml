@@ -9,8 +9,7 @@
         <module name="server" />
         <module name="shared" />
         <module name="client-test" />
-        <module name="client-branding" />
-        <module name="client-app" />
+        <module name="client" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
