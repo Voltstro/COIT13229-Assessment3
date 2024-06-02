@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+
+<AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/21" fx:controller="au.edu.cqu.jhle.client.HomeController">
+   <children>
+      <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="600.0">
+         <children>
+            <Label alignment="TOP_LEFT" text="Maleny Dairy To Home System">
+               <font>
+                  <Font size="18.0" />
+               </font>
+               <VBox.margin>
+                  <Insets top="10.0" />
+               </VBox.margin>
+            </Label>
+            <Button mnemonicParsing="false" onAction="#onOrdersClick" text="Orders" />
+            <Button mnemonicParsing="false" onAction="#onProductsClick" text="Products" />
+            <Button mnemonicParsing="false" onAction="#onDeliverySchedulesClick" text="Delivery schedules" />
+         </children>
+      </VBox>
+   </children>
+</AnchorPane>
