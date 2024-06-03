@@ -44,12 +44,12 @@ public class ProductDetailController implements Initializable {
     
     @FXML
     private void onSaveProduct() throws IOException {
-        
+        saveProduct();
     }
     
     @FXML
     private void onRemoveProduct() throws IOException {
-        
+        removeProduct();
     }
     
     public void setProduct(Product product) {
@@ -57,7 +57,7 @@ public class ProductDetailController implements Initializable {
         populateFields();
     }
     
-    public void populateFields() {
+    private void populateFields() {
         idInput.setText(productDetails.getId().toString());
         nameInput.setText(productDetails.getName());
         quantityInput.setText(productDetails.getQuantity().toString());
@@ -66,4 +66,11 @@ public class ProductDetailController implements Initializable {
         ingredientsInput.setText(productDetails.getIngredients());
     }
     
+    private void saveProduct() {
+        
+    }
+    
+    private void removeProduct() {
+        
+    }
 }

@@ -69,13 +69,20 @@ public class ProductsController implements Initializable {
         productsTable.setOnMouseClicked((MouseEvent event) -> {
             if (event.getClickCount() == 1) {
                 Product selectedProduct = productsTable.getSelectionModel().getSelectedItem();               
-                try {
-                    openProductDetailsPage(selectedProduct);
-                } catch (IOException ex) {
-                    ex.printStackTrace();
+                if (selectedProduct != null) {
+                    try {
+                        openProductDetailsPage(selectedProduct);
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                    }
                 }
             }
         });
+    }
+    
+    @FXML
+    private void onAddNew() throws IOException {
+        App.setRoot("productDetail");
     }
     
     private void openProductDetailsPage(Product product) throws IOException {
