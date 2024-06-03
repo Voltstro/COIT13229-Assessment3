@@ -19,7 +19,7 @@ public class ProductsController implements Initializable {
     private TableView<Product> productsTable;
     
     @FXML
-    private TableColumn<Product, Double> idColumn;
+    private TableColumn<Product, Integer> idColumn;
     
     @FXML
     private TableColumn<Product, String> nameColumn;

@@ -1,5 +1,6 @@
 package au.edu.cqu.jhle.client;
 
+/* NOTE: Refactor into shared project*/
 public class Product {
     private Integer id;
     private String name;
