@@ -1,5 +1,7 @@
 package au.edu.cqu.jhle.client;
 
+import au.edu.cqu.jhle.shared.models.Product;
+
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -12,8 +14,6 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
-
-import au.edu.cqu.jhle.shared.models.Product;
 
 public class ProductsController implements Initializable {
     
