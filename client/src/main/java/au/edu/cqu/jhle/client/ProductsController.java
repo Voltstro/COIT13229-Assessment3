@@ -13,6 +13,8 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 
+import au.edu.cqu.jhle.shared.models.Product;
+
 public class ProductsController implements Initializable {
     
     @FXML
@@ -57,7 +59,7 @@ public class ProductsController implements Initializable {
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
         quantityColumn.setCellValueFactory(new PropertyValueFactory<>("quantity"));
         unitColumn.setCellValueFactory(new PropertyValueFactory<>("unit"));
-        unitPriceColumn.setCellValueFactory(new PropertyValueFactory<>("unitPrice"));
+        unitPriceColumn.setCellValueFactory(new PropertyValueFactory<>("price"));
         
         // Convert the ArrayList to an ObservableList
         ObservableList<Product> observableProductsList = FXCollections.observableArrayList(productsList);
@@ -82,12 +84,12 @@ public class ProductsController implements Initializable {
     
     @FXML
     private void onAddNew() throws IOException {
-        App.setRoot("productDetail");
+        ClientApp.setRoot("productDetail");
     }
     
     private void openProductDetailsPage(Product product) throws IOException {
         //open product details
-        ProductDetailController controller = App.setRoot("productDetail");
+        ProductDetailController controller = ClientApp.setRoot("productDetail");
         //set selected product
         controller.setProduct(product);
     }

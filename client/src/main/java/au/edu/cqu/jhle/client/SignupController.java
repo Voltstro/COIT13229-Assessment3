@@ -44,12 +44,12 @@ public class SignupController implements Initializable {
     
     @FXML
     private void onReturnToLogin() throws IOException {
-        App.setRoot("login");
+        ClientApp.setRoot("login");
     }
     
     @FXML
     private void onSignup() throws IOException {
-        App.setRoot("home");
+        ClientApp.setRoot("home");
     }
     
 }

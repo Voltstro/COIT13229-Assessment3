@@ -22,12 +22,10 @@ public class ClientApp extends Application {
         stage.setTitle(" Maleny Dairy To Home System (MDHS)");
         stage.setScene(scene);
         stage.show();
-        
-        Product prod = new Product(1, "test", "test", 123.12, "test");
     }
 
     public static <T> T setRoot(String fxml) throws IOException {
-        FXMLLoader loader = new FXMLLoader(App.class.getResource(fxml + ".fxml"));
+        FXMLLoader loader = new FXMLLoader(ClientApp.class.getResource(fxml + ".fxml"));
         scene.setRoot(loader.load());
         return loader.getController();
     }

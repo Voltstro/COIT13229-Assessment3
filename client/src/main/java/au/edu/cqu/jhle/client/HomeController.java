@@ -18,17 +18,17 @@ public class HomeController implements Initializable {
     
     @FXML
     private void onOrdersClick() throws IOException {
-        App.setRoot("home");
+        ClientApp.setRoot("home");
     }
     
     @FXML
     private void onProductsClick() throws IOException {
-        App.setRoot("products");
+        ClientApp.setRoot("products");
     }
     
     @FXML
     private void onDeliverySchedulesClick() throws IOException {
-        App.setRoot("home");
+        ClientApp.setRoot("deliverySchedules");
     }
     
 }

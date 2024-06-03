@@ -27,12 +27,12 @@ public class LoginController implements Initializable {
     
     @FXML
     private void onLogin() throws IOException {
-        App.setRoot("home");
+        ClientApp.setRoot("home");
     }
     
     @FXML
     private void onSignup() throws IOException {
-        App.setRoot("signup");
+        ClientApp.setRoot("signup");
     }
     
 }

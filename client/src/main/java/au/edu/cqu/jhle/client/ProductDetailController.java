@@ -7,6 +7,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.TextField;
 
+import au.edu.cqu.jhle.shared.models.Product;
+
 public class ProductDetailController implements Initializable {
     
     @FXML
@@ -39,7 +41,7 @@ public class ProductDetailController implements Initializable {
     
     @FXML
     private void onReturnToList() throws IOException {
-        App.setRoot("products");
+        ClientApp.setRoot("products");
     }
     
     @FXML
@@ -58,11 +60,11 @@ public class ProductDetailController implements Initializable {
     }
     
     private void populateFields() {
-        idInput.setText(productDetails.getId().toString());
+        idInput.setText(String.valueOf(productDetails.getId()));
         nameInput.setText(productDetails.getName());
-        quantityInput.setText(productDetails.getQuantity().toString());
+        quantityInput.setText(String.valueOf(productDetails.getQuantity()));
         unitInput.setText(productDetails.getUnit());
-        unitPriceInput.setText(productDetails.getUnitPrice().toString());
+        unitPriceInput.setText(productDetails.getPrice().toString());
         ingredientsInput.setText(productDetails.getIngredients());
     }
     
