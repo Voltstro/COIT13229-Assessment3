@@ -4,7 +4,7 @@ plugins {
 }
 
 application {
-    mainClass = 'au.edu.cqu.jhle.client.App'
+    mainClass = 'au.edu.cqu.jhle.client.Client'
 }
 
 javafx {
@@ -13,3 +13,7 @@ javafx {
 }
 
 description = 'client'
+
+dependencies {
+    implementation project(":shared")
+}

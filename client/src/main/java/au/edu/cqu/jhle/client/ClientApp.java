@@ -1,5 +1,6 @@
 package au.edu.cqu.jhle.client;
 
+import au.edu.cqu.jhle.shared.models.Product;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -11,7 +12,7 @@ import java.io.IOException;
 /**
  * JavaFX App
  */
-public class App extends Application {
+public class ClientApp extends Application {
 
     private static Scene scene;
 
@@ -20,6 +21,8 @@ public class App extends Application {
         scene = new Scene(loadFXML("primary"), 640, 480);
         stage.setScene(scene);
         stage.show();
+        
+        Product prod = new Product(1, "test", "test", 123.12, "test");
     }
 
     static void setRoot(String fxml) throws IOException {
@@ -27,7 +30,7 @@ public class App extends Application {
     }
 
     private static Parent loadFXML(String fxml) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource(fxml + ".fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(ClientApp.class.getResource(fxml + ".fxml"));
         return fxmlLoader.load();
     }
 
