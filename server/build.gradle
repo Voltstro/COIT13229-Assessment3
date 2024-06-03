@@ -1,0 +1,13 @@
+plugins {
+    id 'application'
+}
+
+application {
+    mainClass = 'au.edu.cqu.jhle.server.Server'
+}
+
+description = 'server'
+
+dependencies {
+    implementation project(":shared")
+}

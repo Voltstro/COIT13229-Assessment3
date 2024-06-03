@@ -1,0 +1,13 @@
+allprojects {
+
+    group = 'au.edu.cqu.jhle'
+
+    repositories {
+        mavenCentral()
+    }
+}
+
+subprojects {
+    apply plugin: 'java'
+
+}
