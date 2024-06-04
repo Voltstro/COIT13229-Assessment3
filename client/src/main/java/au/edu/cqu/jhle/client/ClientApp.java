@@ -19,7 +19,7 @@ public class ClientApp extends Application {
     @Override
     public void start(Stage stage) throws IOException {
         scene = new Scene(loadFXML("login"), 640, 480);
-        stage.setTitle(" Maleny Dairy To Home System (MDHS)");
+        stage.setTitle("Maleny Dairy To Home System (MDHS)");
         stage.setScene(scene);
         stage.show();
     }
