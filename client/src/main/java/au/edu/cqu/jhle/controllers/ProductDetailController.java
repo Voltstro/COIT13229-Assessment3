@@ -1,5 +1,6 @@
-package au.edu.cqu.jhle.client;
+package au.edu.cqu.jhle.controllers;
 
+import au.edu.cqu.jhle.client.ClientApp;
 import au.edu.cqu.jhle.shared.models.Product;
 
 import java.io.IOException;

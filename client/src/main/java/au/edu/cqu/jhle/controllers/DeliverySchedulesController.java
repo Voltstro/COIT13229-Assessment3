@@ -1,5 +1,7 @@
-package au.edu.cqu.jhle.client;
+package au.edu.cqu.jhle.controllers;
 
+import au.edu.cqu.jhle.client.ClientApp;
+import au.edu.cqu.jhle.controllers.DeliveryScheduleDetailController;
 import au.edu.cqu.jhle.shared.models.DeliverySchedule;
 
 import java.net.URL;

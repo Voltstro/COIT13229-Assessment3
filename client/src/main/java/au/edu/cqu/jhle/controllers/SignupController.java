@@ -1,5 +1,6 @@
-package au.edu.cqu.jhle.client;
+package au.edu.cqu.jhle.controllers;
 
+import au.edu.cqu.jhle.client.ClientApp;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
