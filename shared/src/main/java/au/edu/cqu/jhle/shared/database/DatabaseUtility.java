@@ -24,6 +24,8 @@ public class DatabaseUtility {
     private final String TABLE_ORDERSTATUS_QRY;
     private final String TABLE_ORDERS_QRY;
     private final String TABLE_ORDERLINES_QRY;
+    
+    private final String SEED_TABLE_ROLE_QRY;
 
 //    private final String SELECT_EMPLOYEES_QRY;
 //    private final String SELECT_SUPERVISORS_QRY;
@@ -42,7 +44,8 @@ public class DatabaseUtility {
          TABLE_ROLE_QRY = "CREATE TABLE IF NOT EXISTS `mdhs`.`role` (\n" +
             "	`id` bigint(20) NOT NULL AUTO_INCREMENT,\n" +
             "	`name` varchar(255) DEFAULT NULL,\n" +
-            "	PRIMARY KEY (`id`)\n" +
+            "	PRIMARY KEY (`id`),\n" +
+            "	UNIQUE KEY `UK_name` (`name`)\n" +
             ") ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci";
          
          TABLE_USERS_QRY = "CREATE TABLE IF NOT EXISTS `mdhs`.`users` (\n" +
@@ -101,9 +104,14 @@ public class DatabaseUtility {
             "   CONSTRAINT `FK_product_id` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`),\n" +
             "   CONSTRAINT `FK_order_id` FOREIGN KEY (`order_id`) REFERENCES `orders` (`id`)\n" +
             ") ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci";
+        
+        SEED_TABLE_ROLE_QRY =  "INSERT IGNORE INTO mdhs.`role`\n" +
+            "(name)\n" +
+            "VALUES('customer'), ('admin'), ('staff')";
     }
     
     public boolean createDBtables() {
+        // TODO - Check if db & tables already exist
         boolean dbExists = false,
                 tblUsersExist = false,
                 dbCreate = false;
@@ -137,6 +145,8 @@ public class DatabaseUtility {
             statement.executeUpdate(TABLE_ORDERS_QRY);
             statement.executeUpdate(TABLE_ORDERLINES_QRY);
             
+            //Seed data
+            statement.executeUpdate(SEED_TABLE_ROLE_QRY);
             
         } catch (SQLException e) {
             System.out.println("Connection Failed! Check output console");
@@ -152,34 +162,99 @@ public class DatabaseUtility {
     /**
      * 
      */
-    public synchronized void upsertUser(int id, String username, String password, String email, String mobile, String fName, String lName, String address, int postcode, int roleId) {
-        PreparedStatement upsertUser;
+    public synchronized void upsertUser(Integer id, String username, String password, String email, String mobile, String fName, String lName, String address, int postcode, int roleId) {
+        PreparedStatement insertUser;
+        PreparedStatement updateUser;
         
         try {
             if (dbConnection == null)
                 dbConnection = DriverManager.getConnection(DB_URL, USER_NAME, PASSWORD);
             
-            //define query
-            // TODO add on conflict
-            upsertUser = dbConnection.prepareStatement("INSERT INTO mdhs.users\n" +
-                "(id, username, password, email, mobile, first_name, last_name, address, postcode, role_id)\n" +
-                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+            if (id == null) {
+                //insert
+                //define query
+                insertUser = dbConnection.prepareStatement("INSERT INTO mdhs.users\n" +
+                    "(username, password, email, mobile, first_name, last_name, address, postcode, role_id)\n" +
+                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+
+                //populate prepared statement
+                insertUser.setString(1, username);
+                insertUser.setString(2, password);
+                insertUser.setString(3, email);
+                insertUser.setString(4, mobile);
+                insertUser.setString(5, fName);
+                insertUser.setString(6, lName);
+                insertUser.setString(7, address);
+                insertUser.setInt(8, postcode);
+                insertUser.setInt(9, roleId);
+
+                //query prepared statement
+                insertUser.executeUpdate();
+            } else {
+                //update
+                updateUser = dbConnection.prepareStatement("UPDATE mdhs.users\n" +
+                    "SET username = ?, password = ?, email = ?, mobile = ?, first_name = ?,\n" + 
+                    "last_name = ?, address = ?, postcode = ?, role_id = ?\n" + 
+                    "WHERE id = ?");
+                
+                //populate prepared statement
+                updateUser.setString(1, username);
+                updateUser.setString(2, password);
+                updateUser.setString(3, email);
+                updateUser.setString(4, mobile);
+                updateUser.setString(5, fName);
+                updateUser.setString(6, lName);
+                updateUser.setString(7, address);
+                updateUser.setInt(8, postcode);
+                updateUser.setInt(9, roleId);
+                updateUser.setInt(10, id);
+                
+                //query prepared statement
+                updateUser.executeUpdate();
+            }
             
-            //populate prepared statment
-            upsertUser.setInt(1, id);
-            upsertUser.setString(2, username);
-            upsertUser.setString(3, password);
-            upsertUser.setString(4, email);
-            upsertUser.setString(5, mobile);
-            upsertUser.setString(6, fName);
-            upsertUser.setString(7, lName);
-            upsertUser.setString(8, address);
-            upsertUser.setInt(9, postcode);
-            upsertUser.setInt(10, roleId);
+            System.out.println("user upserted");
+        } catch (SQLException e) {
+            System.out.println("Connection Failed! Check output console");
+            System.out.println("SQLException: " + e.getMessage());
+            System.out.println("SQLState: " + e.getSQLState());
+            e.printStackTrace();
+            return;
+        }
+    }
+    
+    /**
+     * 
+     */
+    public synchronized void upsertProducts(Integer id, String name, Integer quantity, String unit, Double unitPrice, String ingredients) {
+        PreparedStatement insertProduct;
+//        PreparedStatement updateProduct
+        
+        try {
+            if (dbConnection == null)
+                dbConnection = DriverManager.getConnection(DB_URL, USER_NAME, PASSWORD);
             
-            //query prepared statement
-            upsertUser.executeUpdate();
-            System.out.println("user added");
+            if (id == null) {
+                //insert
+                //define query
+                insertProduct = dbConnection.prepareStatement("INSERT INTO mdhs.products\n" +
+                    "(name, quantity, unit, unit_price, ingredients)\n" +
+                    "VALUES (?, ?, ?, ?, ?)");
+                
+                //populate prepared statement
+                insertProduct.setString(0, name);
+                insertProduct.setInt(1, quantity);
+                insertProduct.setString(2, unit);
+                insertProduct.setDouble(3, unitPrice);
+                insertProduct.setString(4, ingredients);
+                
+                //query prepared statment
+                insertProduct.executeUpdate();
+                
+            } else {
+                //update
+                //TODO
+            }
         } catch (SQLException e) {
             System.out.println("Connection Failed! Check output console");
             System.out.println("SQLException: " + e.getMessage());
