@@ -3,9 +3,10 @@ package au.edu.cqu.jhle.shared.models;
 import java.io.Serializable;
 
 public class Product implements Serializable {
-    public Product(int id, String name, String unit, Double price, String ingredients) {
+    public Product(int id, String name, int quantity, String unit, Double price, String ingredients) {
         this.id = id;
         this.name = name;
+        this.quantity = quantity;
         this.unit = unit;
         this.price = price;
         this.ingredients = ingredients;
@@ -15,6 +16,8 @@ public class Product implements Serializable {
 
     private String name;
 
+    private int quantity;
+    
     private String unit;
 
     private Double price;
@@ -35,6 +38,14 @@ public class Product implements Serializable {
 
     public void setName(String name) {
         this.name = name;
+    }
+    
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
     }
 
     public String getUnit() {
