@@ -3,7 +3,13 @@ package au.edu.cqu.jhle.shared.models;
 import java.io.Serializable;
 
 public class DeliverySchedule implements Serializable {
-    public DeliverySchedule(int id, int postcode, String day, Double cost) {
+    public DeliverySchedule(String postcode, String day, Double cost) {
+        this.postcode = postcode;
+        this.day = day;
+        this.cost = cost;
+    }
+    
+    public DeliverySchedule(int id, String postcode, String day, Double cost) {
         this.id = id;
         this.postcode = postcode;
         this.day = day;
@@ -12,7 +18,7 @@ public class DeliverySchedule implements Serializable {
     
     private int id;
     
-    private int postcode;
+    private String postcode;
     
     private String day;
     
@@ -26,11 +32,11 @@ public class DeliverySchedule implements Serializable {
         this.id = id;
     }
 
-    public int getPostcode() {
+    public String getPostcode() {
         return postcode;
     }
 
-    public void setPostcode(int postcode) {
+    public void setPostcode(String postcode) {
         this.postcode = postcode;
     }
 

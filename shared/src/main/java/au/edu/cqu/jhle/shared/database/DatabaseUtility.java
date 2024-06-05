@@ -1,13 +1,16 @@
 package au.edu.cqu.jhle.shared.database;
 
+import au.edu.cqu.jhle.shared.models.DeliverySchedule;
 import au.edu.cqu.jhle.shared.models.Product;
 import au.edu.cqu.jhle.shared.models.User;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.LinkedList;
 
 public class DatabaseUtility {
     private final String DB_USERNAME = "mdhs";
@@ -129,6 +132,10 @@ public class DatabaseUtility {
             	('4550', 'Friday', 7);
             """
     };
+    
+    //Queries
+    private final String SELECT_ALL_PRODUCTS_QUERY = "SELECT id, name, quantity, unit, unit_price, ingredients FROM mdhs.products;";
+    private final String SELECT_ALL_DELIVERY_SCHEDULES_QUERY = "SELECT id, postcode, `day`, cost FROM mdhs.delivery_schedule;";
 
     private Connection connection;
     
@@ -241,6 +248,115 @@ ON DUPLICATE KEY UPDATE
             ex.printStackTrace();
 
             throw new Exception("Failed to upsert user!");
+        }
+    }
+    
+    /**
+     * Upserts a delivery schedule
+     */
+    public synchronized void upsertDeliverySchedule(DeliverySchedule deliverySchedule) throws Exception {
+        try {
+            PreparedStatement statement = connection.prepareStatement("""
+                INSERT INTO delivery_schedule
+                (id, postcode, `day`, cost)
+                VALUES(?, ?, ?, ?) AS insert_values
+                ON DUPLICATE KEY UPDATE
+                    postcode = insert_values.postcode,
+                    `day` = insert_values.`day`,
+                    cost = insert_values.cost;                       
+            """);
+            
+            statement.setInt(1, deliverySchedule.getId());
+            statement.setString(2, deliverySchedule.getPostcode());
+            statement.setString(3, deliverySchedule.getDay());
+            statement.setDouble(4, deliverySchedule.getCost());
+            
+            statement.execute();
+        } catch (SQLException ex) {
+            System.out.println("Failed to upsert delivery schedule!");
+            ex.printStackTrace();
+
+            throw new Exception("Failed to upsert deliver schedule!");
+        }
+    }
+    
+    /**
+     * Gets list of all products 
+     */
+    public LinkedList<Product> getProducts() {
+        int id = 0;
+        String name = "";
+        int quantity = 0;
+        String unit = "";
+        Double unitPrice = 0.0;
+        String ingredients = "";
+        
+        LinkedList<Product> products = new LinkedList<>();
+        
+        try {
+            Statement statement = connection.createStatement();
+            
+            ResultSet resultSet = statement.executeQuery(SELECT_ALL_PRODUCTS_QUERY);
+            
+            while (resultSet.next()) {
+                id = resultSet.getInt(1);
+                name = resultSet.getString(2);
+                quantity = resultSet.getInt(3);
+                unit = resultSet.getString(4);
+                unitPrice = resultSet.getDouble(5);
+                ingredients = resultSet.getString(6);
+                
+                products.add(new Product(id, name, quantity, unit, unitPrice, ingredients));
+
+            }
+            
+            System.out.println(products);
+            return products;
+            
+        } catch (SQLException e) {
+            System.out.println("Connection Failed! Check output console");
+            System.out.println("SQLException: " + e.getMessage());
+            System.out.println("SQLState: " + e.getSQLState());
+            e.printStackTrace();
+	    return null;
+        }
+    }
+    
+    /**
+     * Gets list of all delivery schedules 
+     */
+    public LinkedList<DeliverySchedule> getDeliverySchedules() {
+        int id = 0;
+        String postcode = "";
+        String day = "";
+        Double cost = 0.0;
+        
+        LinkedList<DeliverySchedule> deliverySchedules = new LinkedList<>();
+        
+        try {
+            Statement statement = connection.createStatement();
+            
+            ResultSet resultSet = statement.executeQuery(SELECT_ALL_DELIVERY_SCHEDULES_QUERY);
+            
+            while (resultSet.next()) {
+                id = resultSet.getInt(1);
+                postcode = resultSet.getString(2);
+                day = resultSet.getString(3);
+                cost = resultSet.getDouble(4);
+                
+                deliverySchedules.add(new DeliverySchedule(id, postcode, day, cost));
+
+            }
+            
+            System.out.println(deliverySchedules);
+            return deliverySchedules;
+            
+        } catch (SQLException e) {
+            System.out.println("Connection Failed! Check output console");
+            System.out.println("SQLException: " + e.getMessage());
+            System.out.println("SQLState: " + e.getSQLState());
+            e.printStackTrace();
+	    return null;
         }
     }
 
