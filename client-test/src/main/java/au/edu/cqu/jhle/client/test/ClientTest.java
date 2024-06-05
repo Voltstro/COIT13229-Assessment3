@@ -42,7 +42,7 @@ public class ClientTest {
                 return;
             }
 
-            IRequest addProductRequest = new AddProductRequest(new Product(1, "test", "test", 123.1, "test"));
+            IRequest addProductRequest = new AddProductRequest(new Product(1, "test", 123, "test", 123.1, "test"));
             outputStream.writeObject(addProductRequest);
 
             //TODO: We should probs valid a request was successful or not
