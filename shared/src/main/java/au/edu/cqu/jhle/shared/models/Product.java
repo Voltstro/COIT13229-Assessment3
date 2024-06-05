@@ -25,7 +25,7 @@ public class Product implements Serializable {
     private String name;
 
     private int quantity;
-
+    
     private String unit;
 
     private Double price;
@@ -46,6 +46,14 @@ public class Product implements Serializable {
 
     public void setName(String name) {
         this.name = name;
+    }
+    
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
     }
 
     public String getUnit() {
