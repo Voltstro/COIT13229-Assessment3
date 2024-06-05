@@ -1,6 +1,7 @@
 package au.edu.cqu.jhle.shared.database;
 
 import au.edu.cqu.jhle.shared.models.Product;
+import au.edu.cqu.jhle.shared.models.User;
 
 import java.sql.SQLException;
 
@@ -14,6 +15,8 @@ public class DatabaseManager {
             utility.upsertProduct(new Product(7, "test update", 123, "test", 123.1, "test"));
             utility.upsertProduct(new Product(8, "test2 update", 123, "test", 123.1, "test"));
             utility.upsertProduct(new Product(9, "test3 update", 123, "test", 123.1, "test"));
+
+            utility.upsertUser(new User(1, "test.updated", "test", "test", "04 1234 1234", "Test", "Elsum", "21 test St.", "1234", 2));
         } catch (Exception ex) {
 
         }

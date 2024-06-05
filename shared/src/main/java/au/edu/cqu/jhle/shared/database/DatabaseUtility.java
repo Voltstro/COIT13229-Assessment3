@@ -1,6 +1,7 @@
 package au.edu.cqu.jhle.shared.database;
 
 import au.edu.cqu.jhle.shared.models.Product;
+import au.edu.cqu.jhle.shared.models.User;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -40,7 +41,7 @@ public class DatabaseUtility {
             	`first_name` varchar(255) NOT NULL,
             	`last_name` varchar(255) NOT NULL,
             	`address` varchar(255) DEFAULT NULL,
-            	`postcode` integer DEFAULT NULL,
+            	`postcode` varchar(255) DEFAULT NULL,
             	`role_id` bigint NOT NULL,
             	 PRIMARY KEY (`id`),
             	CONSTRAINT `FK_role_id` FOREIGN KEY (`role_id`) REFERENCES `role` (`id`),
@@ -51,7 +52,7 @@ public class DatabaseUtility {
             //products table
             """
             CREATE TABLE IF NOT EXISTS `mdhs`.`products` (
-            	`id` bigint(20) NOT NULL AUTO_INCREMENT,
+            	`id` bigint NOT NULL AUTO_INCREMENT,
             	`name` varchar(255) NOT NULL,
             	`quantity` bigint(20) NOT NULL,
             	`unit` varchar(255) NOT NULL,
@@ -64,8 +65,8 @@ public class DatabaseUtility {
             //delivery_schedule table
             """
             CREATE TABLE IF NOT EXISTS `mdhs`.`delivery_schedule` (
-            	`id` bigint(20) NOT NULL AUTO_INCREMENT,
-            	`postcode` integer NOT NULL,
+            	`id` bigint NOT NULL AUTO_INCREMENT,
+            	`postcode` varchar(255) NOT NULL,
             	`day` varchar(10) NOT NULL,
             	`cost` double NOT NULL,
             	PRIMARY KEY (`id`)
@@ -75,7 +76,7 @@ public class DatabaseUtility {
             //order_status table
             """
             CREATE TABLE IF NOT EXISTS `mdhs`.`order_status` (
-            	`id` bigint(20) NOT NULL AUTO_INCREMENT,
+            	`id` bigint NOT NULL AUTO_INCREMENT,
             	`name` varchar(255) NOT NULL,
             	PRIMARY KEY (`id`)
             ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
@@ -84,9 +85,9 @@ public class DatabaseUtility {
             //orders table
             """
             CREATE TABLE IF NOT EXISTS `mdhs`.`orders` (
-            	`id` bigint(20) NOT NULL AUTO_INCREMENT,
-            	`customer_id` bigint(20) NOT NULL,
-            	`status_id` bigint(20) NOT NULL,
+            	`id` bigint NOT NULL AUTO_INCREMENT,
+            	`customer_id` bigint NOT NULL,
+            	`status_id` bigint NOT NULL,
             	`preferred_delivery_time` varchar(255) DEFAULT NULL,
             	`total_cost` double NOT NULL,
             	PRIMARY KEY (`id`),
@@ -98,10 +99,10 @@ public class DatabaseUtility {
             //order_lines table
             """
             CREATE TABLE IF NOT EXISTS `mdhs`.`order_lines` (
-            	`id` bigint(20) NOT NULL AUTO_INCREMENT,
-            	`product_id` bigint(20) NOT NULL,
-            	`order_id` bigint(20) NOT NULL,
-            	`quantity` bigint(20) NOT NULL,
+            	`id` bigint NOT NULL AUTO_INCREMENT,
+            	`product_id` bigint NOT NULL,
+            	`order_id` bigint NOT NULL,
+            	`quantity` bigint NOT NULL,
             	`cost` double NOT NULL,
             	PRIMARY KEY (`id`),
             	CONSTRAINT `FK_product_id` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`),
@@ -152,12 +153,15 @@ public class DatabaseUtility {
         }
     }
 
+    /**
+     * Upserts a Product
+     */
     public void upsertProduct(Product product) throws Exception {
         try {
             PreparedStatement statement = connection.prepareStatement("""
 INSERT INTO products (id, name, quantity, unit, unit_price, ingredients)
 	VALUES(?, ?, ?, ?, ?, ?) AS insert_values
-ON DUPLICATE KEY UPDATE\s
+ON DUPLICATE KEY UPDATE
 	name = insert_values.name,
 	quantity = insert_values.quantity,
 	unit = insert_values.unit,
@@ -183,106 +187,46 @@ ON DUPLICATE KEY UPDATE\s
 
     }
 
-    /*
-    public synchronized void upsertUser(Integer id, String username, String password, String email, String mobile, String fName, String lName, String address, int postcode, int roleId) {
-        PreparedStatement insertUser;
-        PreparedStatement updateUser;
-        
+    /**
+     * Upserts a user
+     */
+    public void upsertUser(User user) throws Exception {
         try {
-            if (dbConnection == null)
-                dbConnection = DriverManager.getConnection(DB_URL, USER_NAME, PASSWORD);
-            
-            if (id == null) {
-                //insert
-                //define query
-                insertUser = dbConnection.prepareStatement("INSERT INTO mdhs.users\n" +
-                    "(username, password, email, mobile, first_name, last_name, address, postcode, role_id)\n" +
-                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+            PreparedStatement statement = connection.prepareStatement("""
+INSERT INTO users
+(id, username, password, email, mobile, first_name, last_name, address, postcode, role_id)
+VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?) as insert_values
+ON DUPLICATE KEY UPDATE
+    username = insert_values.username,
+    password = insert_values.password,
+    email = insert_values.email,
+    mobile = insert_values.mobile,
+    first_name = insert_values.first_name,
+    last_name = insert_values.last_name,
+    address = insert_values.address,
+    postcode = insert_values.postcode,
+    role_id = insert_values.role_id;
+""");
+            statement.setInt(1, user.getId());
+            statement.setString(2, user.getUsername());
+            statement.setString(3, user.getPassword());
+            statement.setString(4, user.getEmail());
+            statement.setString(5, user.getMobile());
+            statement.setString(6, user.getFirstName());
+            statement.setString(7, user.getLastName());
+            statement.setString(8, user.getAddress());
+            statement.setString(9, user.getPostcode());
+            statement.setInt(10, user.getRoleId());
 
-                //populate prepared statement
-                insertUser.setString(1, username);
-                insertUser.setString(2, password);
-                insertUser.setString(3, email);
-                insertUser.setString(4, mobile);
-                insertUser.setString(5, fName);
-                insertUser.setString(6, lName);
-                insertUser.setString(7, address);
-                insertUser.setInt(8, postcode);
-                insertUser.setInt(9, roleId);
+            statement.execute();
 
-                //query prepared statement
-                insertUser.executeUpdate();
-            } else {
-                //update
-                updateUser = dbConnection.prepareStatement("UPDATE mdhs.users\n" +
-                    "SET username = ?, password = ?, email = ?, mobile = ?, first_name = ?,\n" + 
-                    "last_name = ?, address = ?, postcode = ?, role_id = ?\n" + 
-                    "WHERE id = ?");
-                
-                //populate prepared statement
-                updateUser.setString(1, username);
-                updateUser.setString(2, password);
-                updateUser.setString(3, email);
-                updateUser.setString(4, mobile);
-                updateUser.setString(5, fName);
-                updateUser.setString(6, lName);
-                updateUser.setString(7, address);
-                updateUser.setInt(8, postcode);
-                updateUser.setInt(9, roleId);
-                updateUser.setInt(10, id);
-                
-                //query prepared statement
-                updateUser.executeUpdate();
-            }
-            
-            System.out.println("user upserted");
-        } catch (SQLException e) {
-            System.out.println("Connection Failed! Check output console");
-            System.out.println("SQLException: " + e.getMessage());
-            System.out.println("SQLState: " + e.getSQLState());
-            e.printStackTrace();
-            return;
+        } catch (SQLException ex) {
+            System.out.println("Failed to upsert user!");
+            ex.printStackTrace();
+
+            throw new Exception("Failed to upsert user!");
         }
     }
-
-    public synchronized void upsertProducts(Integer id, String name, Integer quantity, String unit, Double unitPrice, String ingredients) {
-        PreparedStatement insertProduct;
-//        PreparedStatement updateProduct
-        
-        try {
-            if (dbConnection == null)
-                dbConnection = DriverManager.getConnection(DB_URL, USER_NAME, PASSWORD);
-            
-            if (id == null) {
-                //insert
-                //define query
-                insertProduct = dbConnection.prepareStatement("INSERT INTO mdhs.products\n" +
-                    "(name, quantity, unit, unit_price, ingredients)\n" +
-                    "VALUES (?, ?, ?, ?, ?)");
-                
-                //populate prepared statement
-                insertProduct.setString(0, name);
-                insertProduct.setInt(1, quantity);
-                insertProduct.setString(2, unit);
-                insertProduct.setDouble(3, unitPrice);
-                insertProduct.setString(4, ingredients);
-                
-                //query prepared statment
-                insertProduct.executeUpdate();
-                
-            } else {
-                //update
-                //TODO
-            }
-        } catch (SQLException e) {
-            System.out.println("Connection Failed! Check output console");
-            System.out.println("SQLException: " + e.getMessage());
-            System.out.println("SQLState: " + e.getSQLState());
-            e.printStackTrace();
-            return;
-        }
-    }
-    */
 
     private Connection creationConnection(String dbName) throws SQLException {
         String connectionUrl = DB_CONNECTION_STRING;
