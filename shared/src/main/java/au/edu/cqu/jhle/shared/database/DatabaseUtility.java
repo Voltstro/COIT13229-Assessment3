@@ -115,6 +115,18 @@ public class DatabaseUtility {
             INSERT IGNORE INTO mdhs.`role`
             (name)
             VALUES('customer'), ('admin'), ('staff');
+            """,
+            
+            //Seed data for delivery_schedule
+            """
+            INSERT INTO mdhs.delivery_schedule
+            (postcode, day, cost)
+            VALUES
+            	('4552', 'Monday', 5),
+            	('4553', 'Tuesday', 6),
+            	('4554', 'Wednesday', 8),
+            	('4551', 'Thursday', 4),
+            	('4550', 'Friday', 7);
             """
     };
 
@@ -147,6 +159,10 @@ public class DatabaseUtility {
                     creationStatement.execute(script);
                 }
                 creationStatement.close();
+                
+                //read from products file to populate table
+                DataFile readFiles = new DataFile();
+                readFiles.readFromFile(this);
             } catch (SQLException exx) {
                 throw new RuntimeException("Failed to create connection", exx);
             }
