@@ -90,12 +90,4 @@ public class Product implements Serializable {
                 ", ingredients='" + ingredients + '\'' +
                 '}';
     }
-
-    public int getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
-    }
 }
