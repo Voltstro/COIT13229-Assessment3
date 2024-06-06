@@ -15,10 +15,10 @@
             <TableView fx:id="productsTable" layoutX="69.0" layoutY="49.0" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="318.0" prefWidth="500.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0">
                <columns>
                   <TableColumn fx:id="idColumn" prefWidth="71.0" text="Id" />
-                  <TableColumn fx:id="nameColumn" prefWidth="125.0" text="Name" />
-                  <TableColumn fx:id="quantityColumn" prefWidth="100.0" text="Quantity" />
-                  <TableColumn fx:id="unitColumn" prefWidth="100.0" text="Unit" />
-                  <TableColumn fx:id="unitPriceColumn" prefWidth="100.0" text="UnitPrice" />
+                  <TableColumn fx:id="nameColumn" prefWidth="164.0" text="Name" />
+                  <TableColumn fx:id="quantityColumn" prefWidth="99.0" text="Quantity" />
+                  <TableColumn fx:id="unitColumn" prefWidth="108.0" text="Unit" />
+                  <TableColumn fx:id="unitPriceColumn" prefWidth="142.0" text="UnitPrice" />
                </columns>
             </TableView>
             <Label layoutX="25.0" layoutY="14.0" text="Products" AnchorPane.leftAnchor="10.0">
@@ -27,7 +27,7 @@
                </font>
             </Label>
             <Button layoutX="25.0" layoutY="381.0" mnemonicParsing="false" onAction="#onBack" text="Back" AnchorPane.leftAnchor="10.0" />
-            <Button layoutX="553.0" layoutY="383.0" mnemonicParsing="false" onAction="#onAddNew" text="Add new Product" AnchorPane.rightAnchor="10.0" />
+            <Button fx:id="newProductBtn" layoutX="553.0" layoutY="383.0" mnemonicParsing="false" onAction="#onAddNew" text="Add new Product" AnchorPane.rightAnchor="10.0" />
          </children></AnchorPane>
   </content>
    <font>
