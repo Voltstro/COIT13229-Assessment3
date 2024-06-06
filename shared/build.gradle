@@ -1,1 +1,5 @@
 description = 'shared'
+
+dependencies {
+    implementation 'com.mysql:mysql-connector-j:8.4.0'
+}
