@@ -2,6 +2,7 @@ package au.edu.cqu.jhle.server;
 
 import au.edu.cqu.jhle.shared.database.DatabaseUtility;
 import au.edu.cqu.jhle.shared.models.User;
+import au.edu.cqu.jhle.shared.requests.RegisterUserRequest;
 import au.edu.cqu.jhle.shared.requests.Request;
 import au.edu.cqu.jhle.shared.requests.LoginRequest;
 import au.edu.cqu.jhle.shared.requests.PublicKeyRequest;
@@ -117,28 +118,11 @@ public class Server {
                 publicKeyRequest.setPublicKey(bytesPubKey);
                 outputStream.writeObject(publicKeyRequest);
 
-                //First request will always be a login request type
-                /*
-                while (true) {
-                    LoginRequest loginRequest = (LoginRequest) inputStream.readObject();
-                    String passwordText = decrypt(loginRequest.getPassword());
-
-                    //TODO: We probs want to know about user's role and details
-                    User user = loginRequest.isValid(passwordText, databaseManager);
-
-                    //Write back object
-                    outputStream.writeObject(loginRequest);
-
-                    //Login request was good, move on
-                    if(user != null)
-                        break;
-                }
-                */
-
                 //Now we can accept normal requests
                 while (true) {
                     Request request = (Request) inputStream.readObject();
 
+                    //Special handling for login requests
                     if (request instanceof LoginRequest loginRequest) {
                         try {
                             loginRequest.doRequest(databaseManager);
@@ -159,6 +143,32 @@ public class Server {
                             //Failed
                         }
 
+                        outputStream.writeObject(request);
+                        continue;
+                    }
+                    //Special handling for SignupUserRequests
+                    else if (request instanceof RegisterUserRequest signupUserRequest) {
+                        try {
+                            signupUserRequest.doRequest(databaseManager);
+                            User user = signupUserRequest.getUser();
+                            if (user == null) {
+                                throw new Exception();
+                            }
+
+                            //Set connection user to this one
+                            connectionUser = user;
+
+                        } catch (Exception ex) {
+                            //Failed
+                        }
+
+                        outputStream.writeObject(request);
+                        continue;
+                    }
+
+                    //Requests need to be authorized
+                    if(connectionUser == null) {
+                        request.setErrorMessage("Unauthorized user!");
                         outputStream.writeObject(request);
                         continue;
                     }

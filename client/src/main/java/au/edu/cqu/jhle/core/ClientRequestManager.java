@@ -2,6 +2,7 @@ package au.edu.cqu.jhle.core;
 
 import au.edu.cqu.jhle.shared.requests.LoginRequest;
 import au.edu.cqu.jhle.shared.requests.PublicKeyRequest;
+import au.edu.cqu.jhle.shared.requests.RegisterUserRequest;
 
 import javax.crypto.Cipher;
 import java.io.IOException;
@@ -68,6 +69,16 @@ public class ClientRequestManager {
            //This should not happen
            throw new RuntimeException(ex);
        }
+    }
+
+    public RegisterUserRequest sendRegisterUserRequest(RegisterUserRequest request) throws IOException {
+        try {
+            outputStream.writeObject(request);
+            return (RegisterUserRequest) inputStream.readObject();
+        } catch (ClassNotFoundException ex) {
+            //This should not happen
+            throw new RuntimeException(ex);
+        }
     }
 
     public byte[] encrypt(String message) {
