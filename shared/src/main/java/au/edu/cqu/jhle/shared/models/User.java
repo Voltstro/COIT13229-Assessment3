@@ -28,25 +28,25 @@ public class User implements Serializable {
         this.roleId = roleId;
     }
 
-    public int id;
+    private int id;
 
-    public String username;
+    private String username;
 
-    public String password;
+    private String password;
 
-    public String email;
+    private String email;
 
-    public String mobile;
+    private String mobile;
 
-    public String firstName;
+    private String firstName;
 
-    public String lastName;
+    private String lastName;
 
-    public String address;
+    private String address;
 
-    public String postcode;
+    private String postcode;
 
-    public int roleId;
+    private int roleId;
 
     public int getId() {
         return id;

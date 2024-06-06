@@ -73,8 +73,9 @@ public class SignupController implements Initializable {
         }
 
         //Send request and get response
-        RegisterUserRequest response = requestManager.sendRegisterUserRequest(new RegisterUserRequest(username, password, firstName, lastName, phone, email, address, postcode));
+        RegisterUserRequest response = requestManager.sendRegisterUserRequest(new RegisterUserRequest(username, password, email, phone, firstName, lastName, address, postcode));
         if (response.isValid()) {
+            requestManager.setLoggedInUser(response.getUser());
             ClientApp.setRoot("home");
             return;
         }

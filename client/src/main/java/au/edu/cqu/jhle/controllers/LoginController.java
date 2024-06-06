@@ -35,10 +35,10 @@ public class LoginController implements Initializable {
     
     @FXML
     private void onLogin() throws IOException {
-
         String username = usernameInput.getText();
         String password = passwordInput.getText();
 
+        //Ensure fields are provided
         if(Utils.isEmpty(username) || Utils.isEmpty(password) ) {
             Utils.createAndShowAlert("Invalid username and/or password", "User and/or password cannot be empty or blank!", Alert.AlertType.ERROR);
             return;
@@ -47,13 +47,15 @@ public class LoginController implements Initializable {
         byte[] encryptedPassword = requestManager.encrypt(password);
         LoginRequest loginRequest = new LoginRequest(username, encryptedPassword);
 
-
+        //Send login request
         LoginRequest response = requestManager.sendLoginRequest(loginRequest);
         if (response.isValid()) {
+            requestManager.setLoggedInUser(response.getUser());
             ClientApp.setRoot("home");
-        } else {
-            Utils.createAndShowAlert("Invalid username and/or password", "User and/or password is invalid!", Alert.AlertType.ERROR);
+            return;
         }
+
+        Utils.createAndShowAlert("Invalid username and/or password", "User and/or password is invalid!", Alert.AlertType.ERROR);
     }
     
     @FXML

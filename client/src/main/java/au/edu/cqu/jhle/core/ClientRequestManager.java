@@ -1,5 +1,6 @@
 package au.edu.cqu.jhle.core;
 
+import au.edu.cqu.jhle.shared.models.User;
 import au.edu.cqu.jhle.shared.requests.LoginRequest;
 import au.edu.cqu.jhle.shared.requests.PublicKeyRequest;
 import au.edu.cqu.jhle.shared.requests.RegisterUserRequest;
@@ -31,6 +32,15 @@ public class ClientRequestManager {
     private ObjectOutputStream outputStream;
     private ObjectInputStream inputStream;
     private PublicKey publicKey;
+    private User loggedInUser;
+
+    public User getLoggedInUser() {
+        return loggedInUser;
+    }
+
+    public void setLoggedInUser(User loggedInUser) {
+        this.loggedInUser = loggedInUser;
+    }
 
     public ClientRequestManager() {
         try {

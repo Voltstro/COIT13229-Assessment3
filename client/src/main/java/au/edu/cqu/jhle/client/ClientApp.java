@@ -4,6 +4,7 @@ import au.edu.cqu.jhle.core.ClientRequestManager;
 import au.edu.cqu.jhle.core.Utils;
 import au.edu.cqu.jhle.shared.models.Product;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -58,6 +59,13 @@ public class ClientApp extends Application {
 
     public static ClientRequestManager getClientRequestManager() {
         return clientRequestManager;
+    }
+
+    /**
+     * Quits the app
+     */
+    public static void exit() {
+        Platform.exit();
     }
 
 }

@@ -108,8 +108,8 @@ public class RegisterUserRequest extends Request {
     @Override
     public void doRequest(DatabaseUtility databaseUtility) {
         try {
-            User user = databaseUtility.getUserByUsername(username);
-            if(user != null) {
+            User userCheck = databaseUtility.getUserByUsername(username);
+            if(userCheck != null) {
                 setErrorMessage("Username is already in use.");
                 return;
             }
