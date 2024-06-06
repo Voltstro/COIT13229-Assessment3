@@ -109,8 +109,8 @@ public class DatabaseUtility {
             //Seed data for role
             """
             INSERT IGNORE INTO mdhs.`role`
-            (name)
-            VALUES('customer'), ('admin'), ('staff');
+                (id, name)
+            VALUES(1, 'customer'), (2, 'admin'), (3, 'staff');
             """,
             
             //Seed data for delivery_schedule
