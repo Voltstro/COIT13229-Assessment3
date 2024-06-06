@@ -25,6 +25,13 @@ public class GetProductsRequest extends Request {
 
     @Override
     public void doRequest(DatabaseUtility databaseUtility) {
-        productList = databaseUtility.getProducts();
+        try {
+            productList = databaseUtility.getProducts();
+        } catch (Exception ex) {
+            setErrorMessage("Could not get products from database!\n" + ex.getMessage());
+            return;
+        }
+
+        setValid(true);
     }
 }

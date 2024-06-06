@@ -20,7 +20,13 @@ public class AddProductRequest extends Request {
 
     @Override
     public void doRequest(DatabaseUtility databaseUtility) {
-        //TODO: Yup
-        System.out.println("Added product " + product.toString());
+        try {
+            databaseUtility.upsertProduct(product);
+        } catch (Exception ex) {
+            setErrorMessage("Failed to upsert product!\n" + ex.getMessage());
+            return;
+        }
+
+        setValid(true);
     }
 }

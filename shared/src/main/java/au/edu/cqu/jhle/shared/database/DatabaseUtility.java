@@ -307,7 +307,7 @@ ON DUPLICATE KEY UPDATE
     /**
      * Gets list of all products 
      */
-    public ArrayList<Product> getProducts() {
+    public ArrayList<Product> getProducts() throws Exception {
         ArrayList<Product> products = new ArrayList<>();
         
         try {
@@ -332,7 +332,7 @@ ON DUPLICATE KEY UPDATE
             System.out.println("SQLException: " + e.getMessage());
             System.out.println("SQLState: " + e.getSQLState());
             e.printStackTrace();
-	        return null;
+	        throw new Exception("Failed to upsert product!");
         }
     }
     

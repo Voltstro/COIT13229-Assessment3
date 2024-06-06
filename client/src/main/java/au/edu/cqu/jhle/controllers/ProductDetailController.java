@@ -1,20 +1,26 @@
 package au.edu.cqu.jhle.controllers;
 
 import au.edu.cqu.jhle.client.ClientApp;
+import au.edu.cqu.jhle.core.ClientRequestManager;
+import au.edu.cqu.jhle.core.Utils;
 import au.edu.cqu.jhle.shared.models.Product;
 
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+
+import au.edu.cqu.jhle.shared.requests.AddProductRequest;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 
 public class ProductDetailController implements Initializable {
-    
+
     @FXML
-    private TextField idInput;
-    
+    private Label productTitleLabel;
+
     @FXML
     private TextField nameInput;
     
@@ -31,13 +37,15 @@ public class ProductDetailController implements Initializable {
     private TextField ingredientsInput;
     
     private Product productDetails;
+    ClientRequestManager requestManager;
 
     /**
      * Initializes the controller class.
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO
+        requestManager = ClientApp.getClientRequestManager();
+        productDetails = null;
     }
     
     @FXML
@@ -50,18 +58,14 @@ public class ProductDetailController implements Initializable {
         saveProduct();
     }
     
-    @FXML
-    private void onRemoveProduct() throws IOException {
-        removeProduct();
-    }
-    
     public void setProduct(Product product) {
         this.productDetails = product;
         populateFields();
     }
     
     private void populateFields() {
-        idInput.setText(String.valueOf(productDetails.getId()));
+        productTitleLabel.setText("Product Details (ID: %s)".formatted(productDetails.getId()));
+
         nameInput.setText(productDetails.getName());
         quantityInput.setText(String.valueOf(productDetails.getQuantity()));
         unitInput.setText(productDetails.getUnit());
@@ -69,11 +73,52 @@ public class ProductDetailController implements Initializable {
         ingredientsInput.setText(productDetails.getIngredients());
     }
     
-    private void saveProduct() {
-        
-    }
-    
-    private void removeProduct() {
-        
+    private void saveProduct() throws IOException {
+        try {
+            //Ensure fields are not empty
+            if(Utils.isEmpty(nameInput) || Utils.isEmpty(quantityInput) || Utils.isEmpty(unitInput) || Utils.isEmpty(unitPriceInput) || Utils.isEmpty(ingredientsInput)) {
+                Utils.createAndShowAlert("Invalid fields", "Fields cannot be empty!", Alert.AlertType.ERROR);
+                return;
+            }
+
+            //Get field details
+            String name = nameInput.getText();
+            int quantity = Integer.parseInt(quantityInput.getText());
+            String unit = unitInput.getText();
+            double price = Double.parseDouble(unitPriceInput.getText());
+            String ingredients = ingredientsInput.getText();
+
+            boolean newProduct = true;
+            if(productDetails == null) {
+                productDetails = new Product(name, quantity, unit, price, ingredients);
+            } else {
+                productDetails.setName(name);
+                productDetails.setQuantity(quantity);
+                productDetails.setUnit(unit);
+                productDetails.setPrice(price);
+                productDetails.setIngredients(ingredients);
+                newProduct = false;
+            }
+
+            //Send response
+            AddProductRequest response = requestManager.upsertProductRequest(new AddProductRequest(productDetails));
+            if(response.isValid()) {
+                //Display message saying products was updated/added successfully
+                if(newProduct) {
+                    Utils.createAndShowAlert("Successfully created product", "Product was successfully created!", Alert.AlertType.INFORMATION);
+                } else {
+                    Utils.createAndShowAlert("Successfully updated product", "Product was successfully updated!", Alert.AlertType.INFORMATION);
+                }
+
+                ClientApp.setRoot("products");
+                return;
+            }
+
+            //Failed
+            Utils.createAndShowAlert("Failed Updating Product", response.getErrorMessage(), Alert.AlertType.ERROR);
+        } catch (NumberFormatException ex) {
+            //Number formating error
+            Utils.createAndShowAlert("Invalid fields", "Quantity and price must be valid numbers!", Alert.AlertType.ERROR);
+        }
     }
 }
