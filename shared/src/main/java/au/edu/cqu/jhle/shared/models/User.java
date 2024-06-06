@@ -1,6 +1,8 @@
 package au.edu.cqu.jhle.shared.models;
 
-public class User {
+import java.io.Serializable;
+
+public class User implements Serializable {
     public User(String username, String password, String email, String mobile, String firstName, String lastName, String address, String postcode, int roleId) {
         this.username = username;
         this.password = password;

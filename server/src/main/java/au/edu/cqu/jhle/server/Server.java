@@ -1,9 +1,13 @@
 package au.edu.cqu.jhle.server;
 
-import au.edu.cqu.jhle.shared.database.DatabaseManager;
-import au.edu.cqu.jhle.shared.requests.IRequest;
+import au.edu.cqu.jhle.shared.database.DatabaseUtility;
+import au.edu.cqu.jhle.shared.models.User;
+import au.edu.cqu.jhle.shared.requests.Request;
 import au.edu.cqu.jhle.shared.requests.LoginRequest;
+import au.edu.cqu.jhle.shared.requests.PublicKeyRequest;
 
+import javax.crypto.Cipher;
+import java.security.*;
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -22,10 +26,26 @@ public class Server {
      */
     private static final int port = 8000;
 
+    private static PrivateKey privateKey;
+    private static PublicKey publicKey;
+
     /**
      * Server main entry point
      */
     public static void main(String[] args) {
+
+        //Generate keys
+        try {
+            KeyPairGenerator generator = KeyPairGenerator.getInstance("RSA");
+            KeyPair keyPair = generator.generateKeyPair();
+            privateKey = keyPair.getPrivate();
+            publicKey = keyPair.getPublic();
+        } catch (NoSuchAlgorithmException ex) {
+            //This shouldn't happen
+            throw new RuntimeException(ex);
+        }
+
+        //Now start server
         ServerSocket serverSocket = null;
         try {
             serverSocket = new ServerSocket(port);
@@ -54,6 +74,16 @@ public class Server {
         }
     }
 
+    public static String decrypt(byte[] data) {
+       try {
+           Cipher cipher = Cipher.getInstance("RSA");
+           cipher.init(Cipher.DECRYPT_MODE, privateKey, cipher.getParameters());
+           return new String(cipher.doFinal(data));
+       } catch (Exception ex) {
+           throw new RuntimeException(ex);
+       }
+    }
+
     /**
      * Connection class for each client connecting to the server
      * Runs on its own thread
@@ -62,12 +92,14 @@ public class Server {
         private ObjectInputStream inputStream;
         private ObjectOutputStream outputStream;
         private Socket clientSocket;
+        private User connectionUser;
 
         public Connection(Socket clientSocket) {
             try {
                 this.clientSocket = clientSocket;
-                inputStream = new ObjectInputStream(clientSocket.getInputStream());
+
                 outputStream = new ObjectOutputStream(clientSocket.getOutputStream());
+                inputStream = new ObjectInputStream(clientSocket.getInputStream());
             } catch(IOException e) {
                 System.out.println("Error setting up connection!\n" + e.getMessage());
             }
@@ -76,26 +108,61 @@ public class Server {
         @Override
         public void run() {
             try {
-                //TODO: Database manager needs to connect to a database lol
-                DatabaseManager databaseManager = new DatabaseManager();
+                //Create database util for this connection
+                DatabaseUtility databaseManager = new DatabaseUtility();
+
+                //Send public key
+                PublicKeyRequest publicKeyRequest = (PublicKeyRequest) inputStream.readObject();
+                byte[] bytesPubKey = publicKey.getEncoded();
+                publicKeyRequest.setPublicKey(bytesPubKey);
+                outputStream.writeObject(publicKeyRequest);
 
                 //First request will always be a login request type
+                /*
                 while (true) {
                     LoginRequest loginRequest = (LoginRequest) inputStream.readObject();
+                    String passwordText = decrypt(loginRequest.getPassword());
+
                     //TODO: We probs want to know about user's role and details
-                    boolean isValid = loginRequest.isValid(databaseManager);
+                    User user = loginRequest.isValid(passwordText, databaseManager);
 
                     //Write back object
                     outputStream.writeObject(loginRequest);
 
                     //Login request was good, move on
-                    if(isValid)
+                    if(user != null)
                         break;
                 }
+                */
 
                 //Now we can accept normal requests
                 while (true) {
-                    IRequest request = (IRequest) inputStream.readObject();
+                    Request request = (Request) inputStream.readObject();
+
+                    if (request instanceof LoginRequest loginRequest) {
+                        try {
+                            loginRequest.doRequest(databaseManager);
+                            User user = loginRequest.getUser();
+                            if (user == null) {
+                                throw new Exception();
+                            }
+
+                            //Validate password
+                            byte[] passwordEncrpted = loginRequest.getPassword();
+                            String password = decrypt(passwordEncrpted);
+                            if (!user.password.equals(password))
+                                throw new Exception("Password invalid!");
+
+                            //Set connection user to this one
+                            connectionUser = user;
+                        } catch (Exception ex) {
+                            //Failed
+                        }
+
+                        outputStream.writeObject(request);
+                        continue;
+                    }
+
                     request.doRequest(databaseManager);
                     outputStream.writeObject(request);
                 }

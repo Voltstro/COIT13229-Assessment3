@@ -1,24 +1,22 @@
 package au.edu.cqu.jhle.shared.requests;
 
-import au.edu.cqu.jhle.shared.database.DatabaseManager;
-
-import java.io.Serializable;
+import au.edu.cqu.jhle.shared.database.DatabaseUtility;
+import au.edu.cqu.jhle.shared.models.User;
 
 /**
  * Request for login.
  * This is a bit of a special request, as it doesn't implement IRequest, since it has some special logic
  */
-public class LoginRequest implements Serializable {
-    public LoginRequest(String username, String password) {
+public class LoginRequest extends Request {
+    public LoginRequest(String username, byte[] password) {
         this.username = username;
         this.password = password;
-        this.isValid = false;
     }
 
     private String username;
-    private String password;
+    private byte[] password;
 
-    private boolean isValid;
+    private User user;
 
     public String getUsername() {
         return username;
@@ -28,28 +26,33 @@ public class LoginRequest implements Serializable {
         this.username = username;
     }
 
-    public String getPassword() {
+    public byte[] getPassword() {
         return password;
     }
 
-    public void setPassword(String password) {
+    public void setPassword(byte[] password) {
         this.password = password;
     }
 
-    public boolean isValid() {
-        return isValid;
+    public User getUser() {
+        return user;
     }
 
-    public void setValid(boolean valid) {
-        isValid = valid;
+    public void setUser(User user) {
+        this.user = user;
     }
 
-    /**
-     * Checks if this login request is valid
-     * @return Returns true if login is valid
-     */
-    public boolean isValid(DatabaseManager databaseManager) {
-        isValid = true;
-        return true;
+    @Override
+    public void doRequest(DatabaseUtility databaseUtility) {
+        try {
+            user = databaseUtility.getUserByUsername(username);
+            if(user == null) {
+                return;
+            }
+        } catch (Exception ex) {
+            return;
+        }
+
+        setValid(true);
     }
 }
