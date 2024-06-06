@@ -16,7 +16,13 @@ public class DatabaseManager {
             utility.upsertProduct(new Product(8, "test2 update", 123, "test", 123.1, "test"));
             utility.upsertProduct(new Product(9, "test3 update", 123, "test", 123.1, "test"));
 
-            utility.upsertUser(new User(1, "test.updated", "test", "test", "04 1234 1234", "Test", "Elsum", "21 test St.", "1234", 2));
+            utility.upsertUser(new User("test.updated", "test", "test", "04 1234 1234", "Test", "Elsum", "21 test St.", "1234", 2));
+            utility.upsertUser(new User(1, "test.gggg", "test", "test", "04 1234 1234", "Test", "Elsum", "21 test St.", "1234", 2));
+
+
+            var user = utility.getUserByUsername("test.new");
+            System.out.println(user);
+
         } catch (Exception ex) {
 
         }

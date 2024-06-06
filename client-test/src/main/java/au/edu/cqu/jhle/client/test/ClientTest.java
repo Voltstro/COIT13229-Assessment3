@@ -2,7 +2,7 @@ package au.edu.cqu.jhle.client.test;
 
 import au.edu.cqu.jhle.shared.models.Product;
 import au.edu.cqu.jhle.shared.requests.AddProductRequest;
-import au.edu.cqu.jhle.shared.requests.IRequest;
+import au.edu.cqu.jhle.shared.requests.Request;
 import au.edu.cqu.jhle.shared.requests.LoginRequest;
 
 import java.io.IOException;
@@ -42,11 +42,11 @@ public class ClientTest {
                 return;
             }
 
-            IRequest addProductRequest = new AddProductRequest(new Product(1, "test", 123, "test", 123.1, "test"));
+            Request addProductRequest = new AddProductRequest(new Product(1, "test", 123, "test", 123.1, "test"));
             outputStream.writeObject(addProductRequest);
 
             //TODO: We should probs valid a request was successful or not
-            IRequest request = (IRequest) inputStream.readObject();
+            Request request = (Request) inputStream.readObject();
 
 
         } catch (Exception ex){

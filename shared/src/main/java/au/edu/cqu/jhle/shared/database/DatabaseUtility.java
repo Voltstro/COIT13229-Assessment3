@@ -4,12 +4,7 @@ import au.edu.cqu.jhle.shared.models.DeliverySchedule;
 import au.edu.cqu.jhle.shared.models.Product;
 import au.edu.cqu.jhle.shared.models.User;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.LinkedList;
 
 public class DatabaseUtility {
@@ -116,8 +111,8 @@ public class DatabaseUtility {
             //Seed data for role
             """
             INSERT IGNORE INTO mdhs.`role`
-            (name)
-            VALUES('customer'), ('admin'), ('staff');
+                (id, name)
+            VALUES(1, 'customer'), (2, 'admin'), (3, 'staff');
             """,
             
             //Seed data for delivery_schedule
@@ -208,6 +203,34 @@ ON DUPLICATE KEY UPDATE
             throw new Exception("Failed to upsert product!");
         }
 
+    }
+
+    public User getUserByUsername(String username) throws Exception {
+        try {
+            PreparedStatement statement = connection.prepareStatement("SELECT id, username, password, email, mobile, first_name, last_name, address, postcode, role_id FROM mdhs.users WHERE username = ?");
+            statement.setString(1, username);
+
+            ResultSet result = statement.executeQuery();
+            boolean any = result.next();
+            if (!any) return null;
+
+            return new User(
+                    result.getInt(1),
+                    result.getString(2),
+                    result.getString(3),
+                    result.getString(4),
+                    result.getString(5),
+                    result.getString(6),
+                    result.getString(7),
+                    result.getString(8),
+                    result.getString(9),
+                    result.getInt(10));
+        } catch (SQLException ex) {
+            System.out.println("Failed to get user!");
+            ex.printStackTrace();
+
+            throw new Exception("Failed to get user!");
+        }
     }
 
     /**

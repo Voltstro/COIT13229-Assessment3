@@ -1,9 +1,9 @@
 package au.edu.cqu.jhle.shared.requests;
 
-import au.edu.cqu.jhle.shared.database.DatabaseManager;
+import au.edu.cqu.jhle.shared.database.DatabaseUtility;
 import au.edu.cqu.jhle.shared.models.Product;
 
-public class AddProductRequest implements IRequest {
+public class AddProductRequest extends Request {
     public AddProductRequest(Product product) {
         this.product = product;
     }
@@ -19,7 +19,7 @@ public class AddProductRequest implements IRequest {
     }
 
     @Override
-    public void doRequest(DatabaseManager databaseManager) {
+    public void doRequest(DatabaseUtility databaseUtility) {
         //TODO: Yup
         System.out.println("Added product " + product.toString());
     }
