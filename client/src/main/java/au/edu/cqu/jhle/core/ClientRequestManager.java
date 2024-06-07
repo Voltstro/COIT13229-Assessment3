@@ -1,6 +1,7 @@
 package au.edu.cqu.jhle.core;
 
 import au.edu.cqu.jhle.shared.models.User;
+import au.edu.cqu.jhle.shared.requests.GetSchedulesRequest;
 import au.edu.cqu.jhle.shared.requests.LoginRequest;
 import au.edu.cqu.jhle.shared.requests.PublicKeyRequest;
 import au.edu.cqu.jhle.shared.requests.RegisterUserRequest;
@@ -85,6 +86,16 @@ public class ClientRequestManager {
         try {
             outputStream.writeObject(request);
             return (RegisterUserRequest) inputStream.readObject();
+        } catch (ClassNotFoundException ex) {
+            //This should not happen
+            throw new RuntimeException(ex);
+        }
+    }
+    
+    public GetSchedulesRequest sendGetSchedulesRequest(GetSchedulesRequest request) throws IOException {
+        try {
+            outputStream.writeObject(request);
+            return (GetSchedulesRequest) inputStream.readObject();
         } catch (ClassNotFoundException ex) {
             //This should not happen
             throw new RuntimeException(ex);

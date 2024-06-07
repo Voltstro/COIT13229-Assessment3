@@ -1,11 +1,11 @@
 package au.edu.cqu.jhle.controllers;
 
 import au.edu.cqu.jhle.client.ClientApp;
-import au.edu.cqu.jhle.controllers.DeliveryScheduleDetailController;
+import au.edu.cqu.jhle.core.ClientRequestManager;
 import au.edu.cqu.jhle.shared.models.DeliverySchedule;
+import au.edu.cqu.jhle.shared.requests.GetSchedulesRequest;
 
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -13,6 +13,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import java.io.IOException;
+import java.util.LinkedList;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.input.MouseEvent;
@@ -34,20 +35,31 @@ public class DeliverySchedulesController implements Initializable {
     @FXML
     private TableColumn<DeliverySchedule, Double> costColumn;
     
-    private ArrayList<DeliverySchedule> deliverySchedulesList = new ArrayList<>();
+    private ClientRequestManager requestManager;
+    
+    private LinkedList<DeliverySchedule> deliverySchedulesList = new LinkedList<>();
     
     /**
      * Initializes the controller class.
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO
+        requestManager = ClientApp.getClientRequestManager();
         
-        //Sample data to test
-        deliverySchedulesList.add(new DeliverySchedule(1, 4870, "Monday", 25.0));
-        deliverySchedulesList.add(new DeliverySchedule(2, 4868, "Tuesday", 10.0));
-        
-        populateTable();
+        //Get schedules
+        try {
+            GetSchedulesRequest getSchedulesRequest = new GetSchedulesRequest();
+            //send request
+            GetSchedulesRequest response = requestManager.sendGetSchedulesRequest(getSchedulesRequest);
+            if (response.isValid()) {
+                deliverySchedulesList = response.getDeliverySchedulesList();
+            }
+            
+            populateTable();
+            
+        } catch (IOException e) {
+            System.out.println("exception" + e);
+        }
     }
     
     private void populateTable() {
@@ -58,7 +70,7 @@ public class DeliverySchedulesController implements Initializable {
         dayColumn.setCellValueFactory(new PropertyValueFactory<>("day"));
         costColumn.setCellValueFactory(new PropertyValueFactory<>("cost"));
         
-        //Convert ArrayList to an ObservableList
+        //Convert LinkedList to an ObservableList
         ObservableList<DeliverySchedule> observableDeliverySchedulesList = FXCollections.observableArrayList(deliverySchedulesList);
         
         //Set the items for the TableView
