@@ -117,7 +117,7 @@ public class OrdersController implements Initializable {
         //open order details
         OrderDetailController controller = ClientApp.setRoot("orderDetail");
         //set selected order
-        controller.setOrder(order, customerName);
+        controller.setOrder(order, customerName, false);
     }
     
     @FXML

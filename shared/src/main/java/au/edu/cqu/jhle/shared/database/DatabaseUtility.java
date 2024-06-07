@@ -572,7 +572,7 @@ ON DUPLICATE KEY UPDATE
             
             statement.execute();
             
-            Integer id = order.getId();
+            int id = order.getId();
             
             if (order.getId() == 0) {
                 //Get last inserted id as new order's id

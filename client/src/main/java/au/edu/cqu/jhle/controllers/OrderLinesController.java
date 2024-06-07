@@ -113,7 +113,7 @@ public class OrderLinesController implements Initializable {
         // open order details
         OrderDetailController controller = ClientApp.setRoot("orderDetail");
         //set order
-        controller.setOrder(order, customerName);
+        controller.setOrder(order, customerName, true);
     }
     
     private void populateTable() {
