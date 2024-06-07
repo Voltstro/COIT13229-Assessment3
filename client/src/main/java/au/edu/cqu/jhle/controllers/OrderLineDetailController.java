@@ -6,6 +6,7 @@ import au.edu.cqu.jhle.core.Utils;
 import au.edu.cqu.jhle.shared.models.Order;
 import au.edu.cqu.jhle.shared.models.OrderLine;
 import au.edu.cqu.jhle.shared.models.Product;
+import au.edu.cqu.jhle.shared.requests.AddOrderLineRequest;
 import au.edu.cqu.jhle.shared.requests.GetProductsRequest;
 import java.io.IOException;
 import java.net.URL;
@@ -91,7 +92,7 @@ public class OrderLineDetailController implements Initializable {
     
     @FXML
     private void onSaveOrderLine() throws IOException {
-        
+        saveOrderLine();
     }
     
     private void returnToList() throws IOException {
@@ -99,6 +100,45 @@ public class OrderLineDetailController implements Initializable {
         OrderLinesController controller = ClientApp.setRoot("orderLines");
         //set order
         controller.setOrder(order, customerName);
+    }
+    
+    private void saveOrderLine() throws IOException {
+        //ensure fields are not empty
+        if (Utils.isEmpty(quantityInput)) {
+            Utils.createAndShowAlert("Invalid fields", "Fields cannot be empty!", Alert.AlertType.ERROR);
+            return;
+        }
+        
+        //get field details
+        int quantity = Integer.parseInt(quantityInput.getText());
+        Double cost = Double.parseDouble(costInput.getText());
+        Product product = this.productCombo.getValue();
+        
+        boolean newOrderLine = true;
+        if (orderLine == null) {
+            orderLine = new OrderLine(product.getId(), order.getId(), quantity, cost);
+        } else {
+            orderLine.setQuantity(quantity);
+            orderLine.setCost(cost);
+            orderLine.setProductId(product.getId());
+            newOrderLine = false;
+        }
+        
+        AddOrderLineRequest response = requestManager.upsertOrderLineRequest(new AddOrderLineRequest(orderLine));
+        if (response.isValid()) {
+            //Display message saying order line was update/added successfully
+            if (newOrderLine) {
+                Utils.createAndShowAlert("Successfully created order line", "Order line was successfully created!", Alert.AlertType.INFORMATION);
+            } else {
+                Utils.createAndShowAlert("Successfully update order line", "Order line was successfully updated!", Alert.AlertType.INFORMATION);
+            }
+            
+            returnToList();
+            return;
+        }
+        
+        //Failed
+        Utils.createAndShowAlert("Failed  updating order line", response.getErrorMessage(), Alert.AlertType.ERROR);
     }
     
     private void getProducts() {

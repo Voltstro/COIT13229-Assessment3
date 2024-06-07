@@ -570,6 +570,36 @@ ON DUPLICATE KEY UPDATE
             throw new Exception("Failed to upsert order!");
         }
     }
+    
+    /**
+     * Upserts an order line
+     */
+    public void upsertOrderLine(OrderLine orderLine) throws Exception {
+        try {
+            PreparedStatement statement = connection.prepareStatement("""
+                INSERT INTO order_lines
+                (id, product_id, order_id, quantity, cost)
+                VALUES (?, ?, ?, ?, ?) AS insert_values
+                ON DUPLICATE KEY UPDATE
+                    product_id = insert_values.product_id,
+                    quantity = insert_values.quantity,
+                    cost = insert_values.cost;                                               
+            """);
+            
+            statement.setInt(1, orderLine.getId());
+            statement.setInt(2, orderLine.getProductId());
+            statement.setInt(3, orderLine.getOrderId());
+            statement.setInt(4, orderLine.getQuantity());
+            statement.setDouble(5, orderLine.getCost());
+            
+            statement.execute();
+        } catch (SQLException ex) {
+            System.out.println("Failed to upsert order line");
+            ex.printStackTrace();
+            
+            throw new Exception("Failed to upsert order line!");
+        }
+    }
 
     private Connection creationConnection(String dbName) throws SQLException {
         String connectionUrl = DB_CONNECTION_STRING;
