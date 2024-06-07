@@ -202,6 +202,18 @@ public class ClientRequestManager {
             throw new RuntimeException(ex);
         }
     }
+    
+    public AddOrderRequest upsertOrderRequest(AddOrderRequest request) {
+        try {
+            outputStream.writeObject(request);
+            return (AddOrderRequest) inputStream.readObject();
+        } catch (ClassNotFoundException ex) {
+            //This should not happen
+            throw new RuntimeException(ex);
+        } catch (IOException ex) {
+            throw new RuntimeException(ex);
+        }
+    }
 
     public byte[] encrypt(String message) {
        try {

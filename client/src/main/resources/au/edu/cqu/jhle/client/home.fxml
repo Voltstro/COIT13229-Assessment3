@@ -20,7 +20,7 @@
                   <Font size="23.0" />
                </font>
             </Button>
-            <Button alignment="CENTER" layoutX="131.0" layoutY="174.0" mnemonicParsing="false" onAction="#onDeliverySchedulesClick" prefHeight="111.0" prefWidth="173.0" text="Delivery Schedule" textAlignment="CENTER" textOverrun="CLIP" AnchorPane.leftAnchor="120.0" AnchorPane.topAnchor="155.0">
+            <Button alignment="CENTER" layoutX="131.0" layoutY="174.0" mnemonicParsing="false" onAction="#onDeliverySchedulesClick" prefHeight="111.0" prefWidth="173.0" text="Delivery Schedules" textAlignment="CENTER" textOverrun="CLIP" AnchorPane.leftAnchor="120.0" AnchorPane.topAnchor="155.0">
                <font>
                   <Font size="17.0" />
                </font>

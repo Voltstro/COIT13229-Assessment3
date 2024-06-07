@@ -359,7 +359,7 @@ ON DUPLICATE KEY UPDATE
     /**
      * Upserts a delivery schedule
      */
-    public synchronized void upsertDeliverySchedule(DeliverySchedule deliverySchedule) throws Exception {
+    public void upsertDeliverySchedule(DeliverySchedule deliverySchedule) throws Exception {
         try {
             PreparedStatement statement = connection.prepareStatement("""
                 INSERT INTO delivery_schedule
@@ -381,7 +381,7 @@ ON DUPLICATE KEY UPDATE
             System.out.println("Failed to upsert delivery schedule!");
             ex.printStackTrace();
 
-            throw new Exception("Failed to upsert deliver schedule!");
+            throw new Exception("Failed to upsert delivery schedule!");
         }
     }
     
@@ -538,6 +538,36 @@ ON DUPLICATE KEY UPDATE
             System.out.println("SQLState: " + e.getSQLState());
             e.printStackTrace();
 	    throw new Exception("Failed to get order lines!");
+        }
+    }
+    
+    /**
+     * Upserts an order
+     */
+    public void upsertOrder(Order order) throws Exception {
+        try {
+            PreparedStatement statement = connection.prepareStatement("""
+                INSERT INTO orders
+                (id, customer_id, status_id, preferred_delivery_time, total_cost)
+                VALUES (?, ?, ?, ?, ?) AS insert_values
+                ON DUPLICATE KEY UPDATE
+                    status_id = insert_values.status_id,
+                    preferred_delivery_time = insert_values.preferred_delivery_time,
+                    total_cost = insert_values.total_cost;                                                              
+            """);
+            
+            statement.setInt(1, order.getId());
+            statement.setInt(2, order.getCustomerId());
+            statement.setInt(3, order.getStatusId());
+            statement.setString(4, order.getDeliveryTime());
+            statement.setDouble(5, order.getTotalCost());
+            
+            statement.execute();
+        } catch (SQLException ex) {
+            System.out.println("Failed to upsert order");
+            ex.printStackTrace();
+            
+            throw new Exception("Failed to upsert order!");
         }
     }
 

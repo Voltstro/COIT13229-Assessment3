@@ -142,12 +142,18 @@ public class OrdersController implements Initializable {
                 case 1:
                     this.statusName = "Submitted";
                     break;
+                case 2:
+                    this.statusName = "Paid";
+                    break;
+                case 3:
+                    this.statusName = "Received";
+                    break;
             }
             
             //get customer name from id
             try {
                 //Get user by id
-                GetUserByIdRequest getUserByIdRequest = requestManager.getUserByIdRequest(new GetUserByIdRequest(order.getId()));
+                GetUserByIdRequest getUserByIdRequest = requestManager.getUserByIdRequest(new GetUserByIdRequest(order.getCustomerId()));
                 User customer = getUserByIdRequest.getUser();
                 
                 this.customerName = customer.getFirstName() + " " + customer.getLastName();

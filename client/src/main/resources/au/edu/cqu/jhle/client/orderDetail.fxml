@@ -50,7 +50,7 @@
                </font>
             </Label>
             <Button layoutX="80.0" layoutY="371.0" mnemonicParsing="false" onAction="#onSaveOrder" text="Save" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="50.0" />
-            <Button layoutX="250" layoutY="371.0" mnemonicParsing="false" onAction="#onOpenOrderLines" text="Open Order Lines" AnchorPane.bottomAnchor="20.0" />
+            <Button fx:id="openOrderLines" layoutX="250" layoutY="371.0" mnemonicParsing="false" onAction="#onOpenOrderLines" text="Open Order Lines" AnchorPane.bottomAnchor="20.0" />
             <Button layoutX="514.0" layoutY="374.0" mnemonicParsing="false" onAction="#onReturnToList" text="Cancel" AnchorPane.bottomAnchor="20.0" AnchorPane.rightAnchor="50.0" />
          </children></AnchorPane>
   </content>
