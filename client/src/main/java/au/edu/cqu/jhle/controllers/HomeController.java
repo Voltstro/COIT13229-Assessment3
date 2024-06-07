@@ -33,8 +33,9 @@ public class HomeController implements Initializable {
 
         User user = requestManager.getLoggedInUser();
 
-        //TODO: Disable users button for passengers
-        //if (user.getRoleId() == 1)
+        //Disable users button if user is customer
+        if (user.getRoleId() == 1)
+            usersBtn.setDisable(true);
         
         welcomeLabel.setText("Welcome, " + user.getFirstName() + " " + user.getLastName());
     }
@@ -60,8 +61,8 @@ public class HomeController implements Initializable {
     }
 
     @FXML
-    private void onUsersClick() {
-
+    private void onUsersClick() throws IOException {
+        ClientApp.setRoot("users");
     }
     
 }

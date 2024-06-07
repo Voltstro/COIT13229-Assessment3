@@ -7,6 +7,7 @@ import au.edu.cqu.jhle.shared.models.User;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 
 public class DatabaseUtility {
     private final String DB_USERNAME = "mdhs";
@@ -204,6 +205,41 @@ ON DUPLICATE KEY UPDATE
             throw new Exception("Failed to upsert product!");
         }
 
+    }
+
+    /**
+     * Gets all users
+     */
+    public List<User> getUsers() throws Exception {
+        List<User> users = new ArrayList<>();
+        try {
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery("SELECT id, username, password, email, mobile, first_name, last_name, address, postcode, role_id FROM users;");
+
+            while (resultSet.next()) {
+                users.add(new User(
+                    resultSet.getInt(1),
+                    resultSet.getString(2),
+                    resultSet.getString(3),
+                    resultSet.getString(4),
+                    resultSet.getString(5),
+                    resultSet.getString(6),
+                    resultSet.getString(7),
+                    resultSet.getString(8),
+                    resultSet.getString(9),
+                    resultSet.getInt(10)
+                ));
+            }
+
+            return users;
+
+        } catch (SQLException e) {
+            System.out.println("Connection Failed! Check output console");
+            System.out.println("SQLException: " + e.getMessage());
+            System.out.println("SQLState: " + e.getSQLState());
+            e.printStackTrace();
+            throw new Exception("Failed to get users!");
+        }
     }
 
     public User getUserByUsername(String username) throws Exception {

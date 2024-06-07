@@ -111,6 +111,18 @@ public class ClientRequestManager {
         }
     }
 
+    public GetUsersRequest getUsersRequest(GetUsersRequest request) throws IOException {
+        try {
+            outputStream.writeObject(request);
+            return (GetUsersRequest) inputStream.readObject();
+        } catch (ClassNotFoundException ex) {
+            //This should not happen
+            throw new RuntimeException(ex);
+        } catch (IOException ex) {
+            throw new RuntimeException(ex);
+        }
+    }
+
     public byte[] encrypt(String message) {
        try {
            Cipher cipher = Cipher.getInstance("RSA");
