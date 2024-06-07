@@ -23,6 +23,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.MouseEvent;
 
 public class OrderLinesController implements Initializable {
     
@@ -65,7 +66,10 @@ public class OrderLinesController implements Initializable {
     
     @FXML
     private void onAddNew() throws IOException {
-        //Go to order line detail
+        //open order line details
+        OrderLineDetailController controller = ClientApp.setRoot("orderLineDetail");
+        //set selected order line
+        controller.setOrder(order, customerName);
     }
     
     @FXML void onBack() throws IOException {
@@ -126,6 +130,25 @@ public class OrderLinesController implements Initializable {
         orderLinesTable.setItems(observableOrderLinesList);
         
         //Add listener on row click
+        orderLinesTable.setOnMouseClicked((MouseEvent event) -> {
+            if (event.getClickCount() == 1) {
+                OrderLineWithDetails selectedOrderLine = orderLinesTable.getSelectionModel().getSelectedItem();
+                if (selectedOrderLine != null) {
+                    try {
+                        openOrderLineDetailPage(selectedOrderLine.orderLine);
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                    }
+                }
+            }
+        });
+    }
+    
+    public void openOrderLineDetailPage(OrderLine orderLine) throws IOException {
+        //open order line details
+        OrderLineDetailController controller = ClientApp.setRoot("orderLineDetail");
+        //set selected order line
+        controller.setOrderLine(orderLine, order, customerName);
     }
     
     public class OrderLineWithDetails {

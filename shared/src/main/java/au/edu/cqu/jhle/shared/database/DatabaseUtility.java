@@ -128,6 +128,16 @@ public class DatabaseUtility {
             	('4554', 'Wednesday', 8),
             	('4551', 'Thursday', 4),
             	('4550', 'Friday', 7);
+            """,
+            
+            //Seed data for order_status
+            """
+            INSERT INTO mdhs.order_status
+                (id, name)
+            VALUES
+                (1, 'Submitted'),
+                (2, 'Paid'),
+                (3, 'Received');
             """
     };
     
