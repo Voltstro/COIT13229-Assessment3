@@ -5,33 +5,29 @@ import au.edu.cqu.jhle.core.ClientRequestManager;
 import au.edu.cqu.jhle.core.Utils;
 import au.edu.cqu.jhle.shared.models.DeliverySchedule;
 import au.edu.cqu.jhle.shared.requests.AddScheduleRequest;
-
-import java.io.IOException;
-import java.net.URL;
-import java.util.ResourceBundle;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 
+import java.io.IOException;
+import java.net.URL;
+import java.util.ResourceBundle;
+
 public class DeliveryScheduleDetailController implements Initializable {
-    
+
+    ClientRequestManager requestManager;
     @FXML
     private Label scheduleTitleLabel;
-    
     @FXML
     private TextField postcodeInput;
-    
     @FXML
     private TextField dayInput;
-    
     @FXML
     private TextField costInput;
-    
     private DeliverySchedule deliveryScheduleDetails;
-    ClientRequestManager requestManager;
-    
+
     /**
      * Initializes the controller class.
      */
@@ -40,29 +36,29 @@ public class DeliveryScheduleDetailController implements Initializable {
         requestManager = ClientApp.getClientRequestManager();
         deliveryScheduleDetails = null;
     }
-    
+
     @FXML
     private void onReturnToList() throws IOException {
         ClientApp.setRoot("deliverySchedules");
     }
-    
+
     @FXML
     private void onSaveDeliverySchedule() throws IOException {
         saveDeliverySchedule();
     }
-    
+
     public void setDeliverySchedule(DeliverySchedule deliverySchedule) {
         this.deliveryScheduleDetails = deliverySchedule;
         populateFields();
     }
-    
+
     private void populateFields() {
         scheduleTitleLabel.setText("Schedule Details (ID: %s)".formatted(deliveryScheduleDetails.getId()));
         postcodeInput.setText(String.valueOf(deliveryScheduleDetails.getPostcode()));
         dayInput.setText(deliveryScheduleDetails.getDay());
         costInput.setText(deliveryScheduleDetails.getCost().toString());
     }
-    
+
     private void saveDeliverySchedule() throws IOException {
         try {
             //Ensure fields are not empty
@@ -70,12 +66,12 @@ public class DeliveryScheduleDetailController implements Initializable {
                 Utils.createAndShowAlert("Invalid fields", "Fields cannot be empty!", Alert.AlertType.ERROR);
                 return;
             }
-            
+
             //Get field details
             String postcode = postcodeInput.getText();
             String day = dayInput.getText();
             Double cost = Double.parseDouble(costInput.getText());
-            
+
             boolean newSchedule = true;
             if (deliveryScheduleDetails == null) {
                 deliveryScheduleDetails = new DeliverySchedule(postcode, day, cost);
@@ -85,7 +81,7 @@ public class DeliveryScheduleDetailController implements Initializable {
                 deliveryScheduleDetails.setCost(cost);
                 newSchedule = false;
             }
-            
+
             //Send response
             AddScheduleRequest response = requestManager.upsertScheduleRequest(new AddScheduleRequest(deliveryScheduleDetails));
             if (response.isValid()) {
@@ -95,11 +91,11 @@ public class DeliveryScheduleDetailController implements Initializable {
                 } else {
                     Utils.createAndShowAlert("Successfully updated schedule", "Schedule was successfully updated!", Alert.AlertType.INFORMATION);
                 }
-                
+
                 ClientApp.setRoot("deliverySchedules");
                 return;
             }
-            
+
             //Failed
             Utils.createAndShowAlert("Failed updating schedule", response.getErrorMessage(), Alert.AlertType.ERROR);
         } catch (NumberFormatException ex) {

@@ -4,14 +4,14 @@ import au.edu.cqu.jhle.shared.database.DatabaseUtility;
 
 public class PublicKeyRequest extends Request {
 
+    private byte[] publicKey;
+
     public PublicKeyRequest() {
     }
 
     public PublicKeyRequest(byte[] publicKey) {
         this.publicKey = publicKey;
     }
-
-    private byte[] publicKey;
 
     public byte[] getPublicKey() {
         return publicKey;

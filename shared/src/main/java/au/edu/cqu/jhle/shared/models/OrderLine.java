@@ -3,13 +3,19 @@ package au.edu.cqu.jhle.shared.models;
 import java.io.Serializable;
 
 public class OrderLine implements Serializable {
+    private int id;
+    private int productId;
+    private int orderId;
+    private int quantity;
+    private Double cost;
+
     public OrderLine(int productId, int orderId, int quantity, Double cost) {
         this.productId = productId;
         this.orderId = orderId;
         this.quantity = quantity;
         this.cost = cost;
     }
-    
+
     public OrderLine(int id, int productId, int orderId, int quantity, Double cost) {
         this.id = id;
         this.productId = productId;
@@ -17,16 +23,6 @@ public class OrderLine implements Serializable {
         this.quantity = quantity;
         this.cost = cost;
     }
-    
-    private int id;
-    
-    private int productId;
-    
-    private int orderId;
-    
-    private int quantity;
-    
-    private Double cost;
 
     public int getId() {
         return id;
@@ -70,14 +66,14 @@ public class OrderLine implements Serializable {
 
     @Override
     public String toString() {
-        return "OrderLine{" + 
-                "id=" + id + 
+        return "OrderLine{" +
+                "id=" + id +
                 ", productId=" + productId + '\'' +
                 ", orderId=" + orderId + '\'' +
                 ", quantity=" + quantity + '\'' +
                 ", cost=" + cost + '\'' +
                 '}';
     }
-    
-    
+
+
 }

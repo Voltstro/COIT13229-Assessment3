@@ -1,32 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.PasswordField?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.control.TitledPane?>
-<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
-
-<TitledPane animated="false" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="480.0" prefWidth="640.0" text="MDHS" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/21" fx:controller="au.edu.cqu.jhle.controllers.LoginController">
-   <font>
-      <Font size="19.0" />
-   </font>
-   <content>
-      <AnchorPane prefHeight="559.0" prefWidth="985.0">
-         <children>
-            <Label alignment="TOP_CENTER" layoutX="280.0" layoutY="42.0" text="Login" textAlignment="CENTER" AnchorPane.leftAnchor="260.0" AnchorPane.rightAnchor="260.0">
-               <font>
-                  <Font size="30.0" />
-               </font>
-            </Label>
-            <Label layoutX="130.0" layoutY="125.0" text="Username" AnchorPane.leftAnchor="130.0" AnchorPane.rightAnchor="130.0" />
-            <TextField fx:id="usernameInput" layoutX="130.0" layoutY="143.0" prefHeight="30.0" prefWidth="380.0" AnchorPane.leftAnchor="130.0" AnchorPane.rightAnchor="130.0" />
-            <Label layoutX="145.0" layoutY="196.0" text="Password" />
-            <PasswordField fx:id="passwordInput" layoutX="145.0" layoutY="214.0" prefHeight="30.0" prefWidth="346.0" AnchorPane.leftAnchor="130.0" AnchorPane.rightAnchor="130.0" />
-            <Button layoutX="145.0" layoutY="267.0" mnemonicParsing="false" onAction="#onLogin" prefHeight="47.0" prefWidth="61.0" text="Login" AnchorPane.leftAnchor="130.0" />
-            <Button layoutX="425.0" layoutY="284.0" mnemonicParsing="false" onAction="#onSignup" text="Signup" AnchorPane.rightAnchor="130.0" />
-         </children>
-      </AnchorPane>
-   </content>
+<TitledPane xmlns:fx="http://javafx.com/fxml/1" animated="false" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
+            minWidth="-Infinity" prefHeight="480.0" prefWidth="640.0" text="MDHS"
+            xmlns="http://javafx.com/javafx/21" fx:controller="au.edu.cqu.jhle.controllers.LoginController">
+    <font>
+        <Font size="19.0"/>
+    </font>
+    <content>
+        <AnchorPane prefHeight="559.0" prefWidth="985.0">
+            <children>
+                <Label alignment="TOP_CENTER" layoutX="280.0" layoutY="42.0" text="Login" textAlignment="CENTER"
+                       AnchorPane.leftAnchor="260.0" AnchorPane.rightAnchor="260.0">
+                    <font>
+                        <Font size="30.0"/>
+                    </font>
+                </Label>
+                <Label layoutX="130.0" layoutY="125.0" text="Username" AnchorPane.leftAnchor="130.0"
+                       AnchorPane.rightAnchor="130.0"/>
+                <TextField fx:id="usernameInput" layoutX="130.0" layoutY="143.0" prefHeight="30.0" prefWidth="380.0"
+                           AnchorPane.leftAnchor="130.0" AnchorPane.rightAnchor="130.0"/>
+                <Label layoutX="145.0" layoutY="196.0" text="Password"/>
+                <PasswordField fx:id="passwordInput" layoutX="145.0" layoutY="214.0" prefHeight="30.0" prefWidth="346.0"
+                               AnchorPane.leftAnchor="130.0" AnchorPane.rightAnchor="130.0"/>
+                <Button layoutX="145.0" layoutY="267.0" mnemonicParsing="false" onAction="#onLogin" prefHeight="47.0"
+                        prefWidth="61.0" text="Login" AnchorPane.leftAnchor="130.0"/>
+                <Button layoutX="425.0" layoutY="284.0" mnemonicParsing="false" onAction="#onSignup" text="Signup"
+                        AnchorPane.rightAnchor="130.0"/>
+            </children>
+        </AnchorPane>
+    </content>
 </TitledPane>

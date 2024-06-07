@@ -4,6 +4,9 @@ import au.edu.cqu.jhle.shared.database.DatabaseUtility;
 import au.edu.cqu.jhle.shared.models.Order;
 
 public class GetOrderByIdRequest extends Request {
+    private int id;
+    private Order order;
+
     public GetOrderByIdRequest(int id) {
         this.id = id;
     }
@@ -23,11 +26,7 @@ public class GetOrderByIdRequest extends Request {
     public void setOrder(Order order) {
         this.order = order;
     }
-    
-    private int id;
-    
-    private Order order;
-    
+
     @Override
     public void doRequest(DatabaseUtility databaseUtility) {
         try {
@@ -36,7 +35,7 @@ public class GetOrderByIdRequest extends Request {
             setErrorMessage("Could not get order from database\n" + ex.getMessage());
             return;
         }
-        
+
         setValid(true);
     }
 }

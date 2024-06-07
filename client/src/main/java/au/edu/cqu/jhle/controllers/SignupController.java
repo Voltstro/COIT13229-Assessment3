@@ -1,10 +1,6 @@
 package au.edu.cqu.jhle.controllers;
 
 import au.edu.cqu.jhle.client.ClientApp;
-import java.io.IOException;
-import java.net.URL;
-import java.util.ResourceBundle;
-
 import au.edu.cqu.jhle.core.ClientRequestManager;
 import au.edu.cqu.jhle.core.Utils;
 import au.edu.cqu.jhle.shared.requests.RegisterUserRequest;
@@ -14,34 +10,38 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 
+import java.io.IOException;
+import java.net.URL;
+import java.util.ResourceBundle;
+
 public class SignupController implements Initializable {
 
     @FXML
     private TextField firstNameInput;
-    
+
     @FXML
     private TextField lastNameInput;
-    
+
     @FXML
     private TextField phoneInput;
-    
+
     @FXML
     private TextField emailInput;
-    
+
     @FXML
     private TextField addressInput;
-    
+
     @FXML
     private TextField postcodeInput;
-    
+
     @FXML
     private TextField usernameInput;
-    
+
     @FXML
     private PasswordField passwordInput;
 
     private ClientRequestManager requestManager;
-    
+
     /**
      * Initializes the controller class.
      */
@@ -49,12 +49,12 @@ public class SignupController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         requestManager = ClientApp.getClientRequestManager();
     }
-    
+
     @FXML
     private void onReturnToLogin() throws IOException {
         ClientApp.setRoot("login");
     }
-    
+
     @FXML
     private void onSignup() throws IOException {
         String username = usernameInput.getText();
@@ -83,5 +83,5 @@ public class SignupController implements Initializable {
         //Signup failed
         Utils.createAndShowAlert("Signup Failed", "User signup failed: " + response.getErrorMessage(), Alert.AlertType.ERROR);
     }
-    
+
 }

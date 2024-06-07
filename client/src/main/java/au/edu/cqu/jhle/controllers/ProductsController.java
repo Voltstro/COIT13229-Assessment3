@@ -4,13 +4,6 @@ import au.edu.cqu.jhle.client.ClientApp;
 import au.edu.cqu.jhle.core.ClientRequestManager;
 import au.edu.cqu.jhle.core.Utils;
 import au.edu.cqu.jhle.shared.models.Product;
-
-import java.io.IOException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.ResourceBundle;
-
 import au.edu.cqu.jhle.shared.models.User;
 import au.edu.cqu.jhle.shared.requests.GetProductsRequest;
 import javafx.collections.FXCollections;
@@ -24,29 +17,35 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 
+import java.io.IOException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.ResourceBundle;
+
 public class ProductsController implements Initializable {
-    
+
     @FXML
     private TableView<Product> productsTable;
-    
+
     @FXML
     private TableColumn<Product, Integer> idColumn;
-    
+
     @FXML
     private TableColumn<Product, String> nameColumn;
-    
+
     @FXML
     private TableColumn<Product, Integer> quantityColumn;
-    
+
     @FXML
     private TableColumn<Product, String> unitColumn;
-    
+
     @FXML
     private TableColumn<Product, Double> unitPriceColumn;
 
     @FXML
     private Button newProductBtn;
-    
+
     private List<Product> productsList = new ArrayList<>();
 
     private boolean isCustomer;
@@ -58,13 +57,13 @@ public class ProductsController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         ClientRequestManager requestManager = ClientApp.getClientRequestManager();
         User user = requestManager.getLoggedInUser();
-        if(user.getRoleId() == 1) {
+        if (user.getRoleId() == 1) {
             newProductBtn.setDisable(true);
             isCustomer = true;
         }
 
         try {
-            GetProductsRequest  getProductsRequest = requestManager.getProductsRequest(new GetProductsRequest());
+            GetProductsRequest getProductsRequest = requestManager.getProductsRequest(new GetProductsRequest());
             productsList = getProductsRequest.getProductList();
         } catch (Exception ex) {
             System.out.println("Failed to get products!");
@@ -78,10 +77,10 @@ public class ProductsController implements Initializable {
             }
             return;
         }
-        
+
         populateTable();
     }
-    
+
     private void populateTable() {
         // Configure columns
         idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
@@ -89,17 +88,17 @@ public class ProductsController implements Initializable {
         quantityColumn.setCellValueFactory(new PropertyValueFactory<>("quantity"));
         unitColumn.setCellValueFactory(new PropertyValueFactory<>("unit"));
         unitPriceColumn.setCellValueFactory(new PropertyValueFactory<>("price"));
-        
+
         // Convert the ArrayList to an ObservableList
         ObservableList<Product> observableProductsList = FXCollections.observableArrayList(productsList);
-        
+
         // Set the items for the TableView
         productsTable.setItems(observableProductsList);
-        
+
         // Add listener on row click
         productsTable.setOnMouseClicked((MouseEvent event) -> {
             if (event.getClickCount() == 1) {
-                Product selectedProduct = productsTable.getSelectionModel().getSelectedItem();               
+                Product selectedProduct = productsTable.getSelectionModel().getSelectedItem();
                 if (selectedProduct != null) {
                     try {
                         openProductDetailsPage(selectedProduct);
@@ -110,7 +109,7 @@ public class ProductsController implements Initializable {
             }
         });
     }
-    
+
     @FXML
     private void onAddNew() throws IOException {
         ClientApp.setRoot("productDetail");
@@ -120,14 +119,14 @@ public class ProductsController implements Initializable {
     private void onBack() throws IOException {
         ClientApp.setRoot("home");
     }
-    
+
     private void openProductDetailsPage(Product product) throws IOException {
-        if(isCustomer) return;
+        if (isCustomer) return;
 
         //open product details
         ProductDetailController controller = ClientApp.setRoot("productDetail");
         //set selected product
         controller.setProduct(product);
     }
-    
+
 }

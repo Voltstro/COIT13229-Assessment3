@@ -8,9 +8,6 @@ import au.edu.cqu.jhle.shared.models.User;
 import au.edu.cqu.jhle.shared.requests.AddOrderRequest;
 import au.edu.cqu.jhle.shared.requests.GetOrderByIdRequest;
 import au.edu.cqu.jhle.shared.requests.GetUserByIdRequest;
-import java.io.IOException;
-import java.net.URL;
-import java.util.ResourceBundle;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
@@ -18,32 +15,30 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 
+import java.io.IOException;
+import java.net.URL;
+import java.util.ResourceBundle;
+
 public class OrderDetailController implements Initializable {
-    
+
+    ClientRequestManager requestManager;
     @FXML
     private Label orderTitleLabel;
-    
     @FXML
     private TextField customerInput;
-    
     @FXML
     private TextField deliveryTimeInput;
-    
     @FXML
     private TextField totalCostInput;
-    
     @FXML
     private Label orderStatusLabel;
-    
     @FXML
     private Button openOrderLines;
-    
-    ClientRequestManager requestManager;
     private Order orderDetails;
     private String customerName;
-    
+
     private int customerId;
-    
+
     /**
      * Initializes the controller class.
      */
@@ -51,28 +46,28 @@ public class OrderDetailController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         requestManager = ClientApp.getClientRequestManager();
         orderDetails = null;
-        
+
         //populate customer with current user details
         User user = requestManager.getLoggedInUser();
         customerInput.setText(user.getFirstName() + " " + user.getLastName());
         customerId = user.getId();
         openOrderLines.setDisable(true);
-        
+
         this.customerInput.setDisable(true);
         this.totalCostInput.setDisable(true);
         this.totalCostInput.setText("0.0");
     }
-    
+
     @FXML
     private void onReturnToList() throws IOException {
         ClientApp.setRoot("orders");
     }
-    
+
     @FXML
     private void onSaveOrder() throws IOException {
         saveOrder();
     }
-    
+
     @FXML
     private void onOpenOrderLines() throws IOException {
         // open order details
@@ -80,7 +75,7 @@ public class OrderDetailController implements Initializable {
         //set order
         controller.setOrder(orderDetails, customerName);
     }
-    
+
     public void setOrder(Order order, String customerName, boolean isFromOrderLines) {
         openOrderLines.setDisable(false);
         if (isFromOrderLines) {
@@ -91,7 +86,7 @@ public class OrderDetailController implements Initializable {
         this.customerName = customerName;
         populateFields();
     }
-    
+
     private void saveOrder() throws IOException {
         //ensure fields are not empty
         if (Utils.isEmpty(deliveryTimeInput)) {
@@ -118,7 +113,7 @@ public class OrderDetailController implements Initializable {
         if (response.isValid()) {
             //Update order object and customer name from db
             refreshOrder(response.getId());
-            
+
             //Display message saying order was updated/added successfully
             if (newOrder) {
                 this.openOrderLines.setDisable(false);
@@ -131,12 +126,12 @@ public class OrderDetailController implements Initializable {
 
         //Failed
         Utils.createAndShowAlert("Failed  updating order", response.getErrorMessage(), Alert.AlertType.ERROR);
-        
+
     }
-    
+
     private void populateFields() {
         orderTitleLabel.setText("Order Details (ID: %s)".formatted(orderDetails.getId()));
-        
+
         customerInput.setText(customerName);
         customerId = orderDetails.getCustomerId();
         customerInput.setDisable(true);
@@ -145,7 +140,7 @@ public class OrderDetailController implements Initializable {
         totalCostInput.setDisable(true);
         orderStatusLabel.setText("Order Status: %s".formatted(getOrderStatus(orderDetails.getStatusId())));
     }
-    
+
     private String getOrderStatus(int statusId) {
         String statusName = "";
         switch (statusId) {
@@ -159,10 +154,10 @@ public class OrderDetailController implements Initializable {
                 statusName = "Received";
                 break;
         }
-        
+
         return statusName;
     }
-    
+
     private void refreshOrder(int id) {
         try {
             GetOrderByIdRequest getOrderByIdRequest = requestManager.getOrderByIdRequest(new GetOrderByIdRequest(id));
@@ -178,7 +173,7 @@ public class OrderDetailController implements Initializable {
                 throw new RuntimeException(e);
             }
         }
-        
+
         //get customer name from id
         try {
             //Get user by id
@@ -198,8 +193,8 @@ public class OrderDetailController implements Initializable {
                 throw new RuntimeException(e);
             }
         }
-        
+
         populateFields();
     }
-    
+
 }

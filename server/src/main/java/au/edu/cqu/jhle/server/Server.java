@@ -2,22 +2,21 @@ package au.edu.cqu.jhle.server;
 
 import au.edu.cqu.jhle.shared.database.DatabaseUtility;
 import au.edu.cqu.jhle.shared.models.User;
-import au.edu.cqu.jhle.shared.requests.RegisterUserRequest;
-import au.edu.cqu.jhle.shared.requests.Request;
 import au.edu.cqu.jhle.shared.requests.LoginRequest;
 import au.edu.cqu.jhle.shared.requests.PublicKeyRequest;
+import au.edu.cqu.jhle.shared.requests.RegisterUserRequest;
+import au.edu.cqu.jhle.shared.requests.Request;
 
 import javax.crypto.Cipher;
-import java.security.*;
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.security.*;
 
 /**
- *
  * @author Administrator
  */
 public class Server {
@@ -61,12 +60,12 @@ public class Server {
                 Connection clientConnection = new Connection(clientSocket);
                 clientConnection.start();
             }
-        } catch(IOException e) {
+        } catch (IOException e) {
             System.out.println("Error in Server!\n" + e.getMessage());
         } finally {
             //Close socket when done
-            if(serverSocket != null) {
-                try{
+            if (serverSocket != null) {
+                try {
                     serverSocket.close();
                 } catch (IOException e) {
                     System.out.println("Error closing server socket!\n" + e.getMessage());
@@ -76,13 +75,13 @@ public class Server {
     }
 
     public static String decrypt(byte[] data) {
-       try {
-           Cipher cipher = Cipher.getInstance("RSA");
-           cipher.init(Cipher.DECRYPT_MODE, privateKey, cipher.getParameters());
-           return new String(cipher.doFinal(data));
-       } catch (Exception ex) {
-           throw new RuntimeException(ex);
-       }
+        try {
+            Cipher cipher = Cipher.getInstance("RSA");
+            cipher.init(Cipher.DECRYPT_MODE, privateKey, cipher.getParameters());
+            return new String(cipher.doFinal(data));
+        } catch (Exception ex) {
+            throw new RuntimeException(ex);
+        }
     }
 
     /**
@@ -101,7 +100,7 @@ public class Server {
 
                 outputStream = new ObjectOutputStream(clientSocket.getOutputStream());
                 inputStream = new ObjectInputStream(clientSocket.getInputStream());
-            } catch(IOException e) {
+            } catch (IOException e) {
                 System.out.println("Error setting up connection!\n" + e.getMessage());
             }
         }
@@ -134,8 +133,7 @@ public class Server {
                             //Validate password
                             byte[] passwordEncrpted = loginRequest.getPassword();
                             String password = decrypt(passwordEncrpted);
-                            if (!user.getPassword().equals(password))
-                            {
+                            if (!user.getPassword().equals(password)) {
                                 loginRequest.setValid(false);
                                 loginRequest.setErrorMessage("Invalid username and/or password!");
                                 throw new Exception("Password invalid!");
@@ -171,7 +169,7 @@ public class Server {
                     }
 
                     //Requests need to be authorized
-                    if(connectionUser == null) {
+                    if (connectionUser == null) {
                         request.setErrorMessage("Unauthorized user!");
                         outputStream.writeObject(request);
                         continue;
@@ -181,16 +179,16 @@ public class Server {
                     outputStream.writeObject(request);
                 }
 
-            } catch(EOFException e) {
+            } catch (EOFException e) {
                 System.out.println("EOF Error!\n" + e.getMessage());
-            } catch(IOException e) {
+            } catch (IOException e) {
                 //Thrown when client disconnects
             } catch (ClassNotFoundException ex) {
                 System.out.println("Class not found error!\n" + ex.getMessage());
             } finally {
                 try {
                     clientSocket.close();
-                } catch(IOException e) {
+                } catch (IOException e) {
                     //Swallow, should be fine
                 }
             }

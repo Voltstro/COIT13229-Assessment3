@@ -32,14 +32,6 @@ public class ClientRequestManager {
     private PublicKey publicKey;
     private User loggedInUser;
 
-    public User getLoggedInUser() {
-        return loggedInUser;
-    }
-
-    public void setLoggedInUser(User loggedInUser) {
-        this.loggedInUser = loggedInUser;
-    }
-
     public ClientRequestManager() {
         try {
             //Connect to server
@@ -69,14 +61,22 @@ public class ClientRequestManager {
         }
     }
 
+    public User getLoggedInUser() {
+        return loggedInUser;
+    }
+
+    public void setLoggedInUser(User loggedInUser) {
+        this.loggedInUser = loggedInUser;
+    }
+
     public LoginRequest sendLoginRequest(LoginRequest request) throws IOException {
-       try {
-           outputStream.writeObject(request);
-           return (LoginRequest) inputStream.readObject();
-       } catch (ClassNotFoundException ex) {
-           //This should not happen
-           throw new RuntimeException(ex);
-       }
+        try {
+            outputStream.writeObject(request);
+            return (LoginRequest) inputStream.readObject();
+        } catch (ClassNotFoundException ex) {
+            //This should not happen
+            throw new RuntimeException(ex);
+        }
     }
 
     public RegisterUserRequest sendRegisterUserRequest(RegisterUserRequest request) throws IOException {
@@ -110,7 +110,7 @@ public class ClientRequestManager {
             throw new RuntimeException(ex);
         }
     }
-    
+
     public GetSchedulesRequest sendGetSchedulesRequest(GetSchedulesRequest request) throws IOException {
         try {
             outputStream.writeObject(request);
@@ -120,7 +120,7 @@ public class ClientRequestManager {
             throw new RuntimeException(ex);
         }
     }
-    
+
     public AddScheduleRequest upsertScheduleRequest(AddScheduleRequest request) {
         try {
             outputStream.writeObject(request);
@@ -132,7 +132,7 @@ public class ClientRequestManager {
             throw new RuntimeException(ex);
         }
     }
-    
+
     public GetOrdersRequest getOrdersRequest(GetOrdersRequest request) throws IOException {
         try {
             outputStream.writeObject(request);
@@ -166,7 +166,7 @@ public class ClientRequestManager {
             throw new RuntimeException(ex);
         }
     }
-    
+
     public GetUserByIdRequest getUserByIdRequest(GetUserByIdRequest request) throws IOException {
         try {
             outputStream.writeObject(request);
@@ -178,7 +178,7 @@ public class ClientRequestManager {
             throw new RuntimeException(ex);
         }
     }
-    
+
     public GetOrderLinesForOrderRequest getOrderLinesForOrderRequest(GetOrderLinesForOrderRequest request) throws IOException {
         try {
             outputStream.writeObject(request);
@@ -190,7 +190,7 @@ public class ClientRequestManager {
             throw new RuntimeException(ex);
         }
     }
-    
+
     public GetProductByIdRequest getProductByIdRequest(GetProductByIdRequest request) throws IOException {
         try {
             outputStream.writeObject(request);
@@ -202,7 +202,7 @@ public class ClientRequestManager {
             throw new RuntimeException(ex);
         }
     }
-    
+
     public AddOrderRequest upsertOrderRequest(AddOrderRequest request) {
         try {
             outputStream.writeObject(request);
@@ -214,7 +214,7 @@ public class ClientRequestManager {
             throw new RuntimeException(ex);
         }
     }
-    
+
     public AddOrderLineRequest upsertOrderLineRequest(AddOrderLineRequest request) {
         try {
             outputStream.writeObject(request);
@@ -226,7 +226,7 @@ public class ClientRequestManager {
             throw new RuntimeException(ex);
         }
     }
-    
+
     public GetOrderByIdRequest getOrderByIdRequest(GetOrderByIdRequest request) throws IOException {
         try {
             outputStream.writeObject(request);
@@ -240,14 +240,14 @@ public class ClientRequestManager {
     }
 
     public byte[] encrypt(String message) {
-       try {
-           Cipher cipher = Cipher.getInstance("RSA");
-           cipher.init(Cipher.ENCRYPT_MODE, publicKey);
+        try {
+            Cipher cipher = Cipher.getInstance("RSA");
+            cipher.init(Cipher.ENCRYPT_MODE, publicKey);
 
-           return cipher.doFinal(message.getBytes("UTF-8"));
-       } catch (Exception ex) {
-           throw new RuntimeException(ex);
-       }
+            return cipher.doFinal(message.getBytes("UTF-8"));
+        } catch (Exception ex) {
+            throw new RuntimeException(ex);
+        }
     }
 
 }

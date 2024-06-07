@@ -1,9 +1,7 @@
 package au.edu.cqu.jhle.controllers;
 
 import au.edu.cqu.jhle.client.ClientApp;
-import au.edu.cqu.jhle.core.ClientRequestManager;
 import au.edu.cqu.jhle.core.Utils;
-import au.edu.cqu.jhle.shared.models.Product;
 import au.edu.cqu.jhle.shared.models.User;
 import au.edu.cqu.jhle.shared.requests.GetUsersRequest;
 import javafx.collections.FXCollections;
@@ -55,7 +53,7 @@ public class UsersController implements Initializable {
                 userWithRoles.add(userWithRole);
             }
 
-        } catch (Exception ex){
+        } catch (Exception ex) {
             System.out.println("Failed to get users!");
             ex.printStackTrace();
 
@@ -118,6 +116,13 @@ public class UsersController implements Initializable {
     }
 
     public class UserWithRole {
+        private int id;
+        private String firstName;
+        private String lastName;
+        private String username;
+        private String roleName;
+        private User user;
+
         public UserWithRole(User user) {
             this.id = user.getId();
             this.firstName = user.getFirstName();
@@ -141,60 +146,48 @@ public class UsersController implements Initializable {
             this.user = user;
         }
 
-        private int id;
-
-        private String firstName;
-
-        private String lastName;
-
-        private String username;
-
-        private String roleName;
-
-        private User user;
-
         public int getId() {
             return id;
-        }
-
-        public String getFirstName() {
-            return firstName;
-        }
-
-        public String getLastName() {
-            return lastName;
-        }
-
-        public String getUsername() {
-            return username;
-        }
-
-        public String getRoleName() {
-            return roleName;
-        }
-
-        public User getUser() {
-            return user;
         }
 
         public void setId(int id) {
             this.id = id;
         }
 
+        public String getFirstName() {
+            return firstName;
+        }
+
         public void setFirstName(String firstName) {
             this.firstName = firstName;
+        }
+
+        public String getLastName() {
+            return lastName;
         }
 
         public void setLastName(String lastName) {
             this.lastName = lastName;
         }
 
+        public String getUsername() {
+            return username;
+        }
+
         public void setUsername(String username) {
             this.username = username;
         }
 
+        public String getRoleName() {
+            return roleName;
+        }
+
         public void setRoleName(String roleName) {
             this.roleName = roleName;
+        }
+
+        public User getUser() {
+            return user;
         }
 
         public void setUser(User user) {

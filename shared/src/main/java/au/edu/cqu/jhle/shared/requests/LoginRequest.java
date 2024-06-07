@@ -8,15 +8,14 @@ import au.edu.cqu.jhle.shared.models.User;
  * This is a bit of a special request, as it doesn't implement IRequest, since it has some special logic
  */
 public class LoginRequest extends Request {
+    private String username;
+    private byte[] password;
+    private User user;
+
     public LoginRequest(String username, byte[] password) {
         this.username = username;
         this.password = password;
     }
-
-    private String username;
-    private byte[] password;
-
-    private User user;
 
     public String getUsername() {
         return username;
@@ -46,7 +45,7 @@ public class LoginRequest extends Request {
     public void doRequest(DatabaseUtility databaseUtility) {
         try {
             user = databaseUtility.getUserByUsername(username);
-            if(user == null) {
+            if (user == null) {
                 return;
             }
         } catch (Exception ex) {

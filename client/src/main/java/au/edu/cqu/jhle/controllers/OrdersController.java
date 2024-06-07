@@ -7,11 +7,6 @@ import au.edu.cqu.jhle.shared.models.Order;
 import au.edu.cqu.jhle.shared.models.User;
 import au.edu.cqu.jhle.shared.requests.GetOrdersRequest;
 import au.edu.cqu.jhle.shared.requests.GetUserByIdRequest;
-import java.io.IOException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.ResourceBundle;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -23,56 +18,53 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 
+import java.io.IOException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.ResourceBundle;
+
 public class OrdersController implements Initializable {
-    
+
+    ClientRequestManager requestManager;
     @FXML
     private TableView<OrderWithDetails> ordersTable;
-    
     @FXML
     private TableColumn<OrderWithDetails, Integer> idColumn;
-    
     @FXML
     private TableColumn<OrderWithDetails, String> nameColumn;
-    
     @FXML
     private TableColumn<OrderWithDetails, String> deliveryTimeColumn;
-    
     @FXML
     private TableColumn<OrderWithDetails, Double> costColumn;
-    
     @FXML
     private TableColumn<OrderWithDetails, String> statusColumn;
-    
     @FXML
     private Button newOrderBtn;
-    
     private List<OrderWithDetails> orderWithDetailsList = new ArrayList<>();
-    
-    ClientRequestManager requestManager;
-    
-    
+
     /**
      * Initializes the controller class.
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         requestManager = ClientApp.getClientRequestManager();
-        
+
         //TODO handle user role
-        
+
         try {
             //Get all orders
             GetOrdersRequest getOrdersRequest = requestManager.getOrdersRequest(new GetOrdersRequest());
-            
+
             //Convert orders into custom OrdersWithDetails object
-            for (Order order: getOrdersRequest.getOrderList()) {
+            for (Order order : getOrdersRequest.getOrderList()) {
                 OrderWithDetails orderWithDetails = new OrderWithDetails(order);
                 orderWithDetailsList.add(orderWithDetails);
             }
         } catch (Exception ex) {
             System.out.println("Failed to get orders!");
             ex.printStackTrace();
-            
+
             Utils.createAndShowAlert("Failed getting orders", "Failed to get orders!", Alert.AlertType.ERROR);
             try {
                 ClientApp.setRoot("home");
@@ -80,10 +72,10 @@ public class OrdersController implements Initializable {
                 throw new RuntimeException(e);
             }
         }
-        
+
         populateTable();
     }
-    
+
     private void populateTable() {
         //Configure columns
         idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
@@ -91,13 +83,13 @@ public class OrdersController implements Initializable {
         deliveryTimeColumn.setCellValueFactory(new PropertyValueFactory<>("deliveryTime"));
         costColumn.setCellValueFactory(new PropertyValueFactory<>("totalCost"));
         statusColumn.setCellValueFactory(new PropertyValueFactory<>("statusName"));
-        
+
         //Convert the ArrayList to an ObservableList
         ObservableList<OrderWithDetails> observableOrdersList = FXCollections.observableArrayList(orderWithDetailsList);
-        
+
         //Set the items for the TableView
         ordersTable.setItems(observableOrdersList);
-        
+
         //Add listener on row click
         ordersTable.setOnMouseClicked((MouseEvent event) -> {
             if (event.getClickCount() == 1) {
@@ -112,30 +104,37 @@ public class OrdersController implements Initializable {
             }
         });
     }
-    
+
     public void openOrderDetailPage(Order order, String customerName) throws IOException {
         //open order details
         OrderDetailController controller = ClientApp.setRoot("orderDetail");
         //set selected order
         controller.setOrder(order, customerName, false);
     }
-    
+
     @FXML
     private void onAddNew() throws IOException {
         ClientApp.setRoot("orderDetail");
     }
-    
+
     @FXML
     private void onBack() throws IOException {
         ClientApp.setRoot("home");
     }
-    
+
     public class OrderWithDetails {
+        private int id;
+        private String customerName;
+        private String statusName;
+        private String deliveryTime;
+        private Double totalCost;
+        private Order order;
+
         public OrderWithDetails(Order order) {
             this.id = order.getId();
             this.deliveryTime = order.getDeliveryTime();
             this.totalCost = order.getTotalCost();
-            
+
             //Status ID names are hardcoded. Quicker to do this than fetch from DB again, but would be an improvement.
             int statusId = order.getStatusId();
             switch (statusId) {
@@ -149,19 +148,19 @@ public class OrdersController implements Initializable {
                     this.statusName = "Received";
                     break;
             }
-            
+
             //get customer name from id
             try {
                 //Get user by id
                 GetUserByIdRequest getUserByIdRequest = requestManager.getUserByIdRequest(new GetUserByIdRequest(order.getCustomerId()));
                 User customer = getUserByIdRequest.getUser();
-                
+
                 this.customerName = customer.getFirstName() + " " + customer.getLastName();
-                
+
             } catch (Exception ex) {
                 System.out.println("Failed to get user for order!");
                 ex.printStackTrace();
-                
+
                 Utils.createAndShowAlert("Failed getting user for order!", "Failed to get user for order!", Alert.AlertType.ERROR);
                 try {
                     ClientApp.setRoot("home");
@@ -169,21 +168,9 @@ public class OrdersController implements Initializable {
                     throw new RuntimeException(e);
                 }
             }
-            
+
             this.order = order;
         }
-
-        private int id;
-
-        private String customerName;
-
-        private String statusName;
-
-        private String deliveryTime;
-
-        private Double totalCost;
-        
-        private Order order;
 
         public int getId() {
             return id;
@@ -224,11 +211,11 @@ public class OrdersController implements Initializable {
         public void setTotalCost(Double totalCost) {
             this.totalCost = totalCost;
         }
-        
+
         public Order getOrder() {
             return order;
         }
-        
+
         public void setOrder(Order order) {
             this.order = order;
         }

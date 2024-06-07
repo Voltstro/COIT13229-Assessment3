@@ -87,7 +87,7 @@ public class UserDetailController implements Initializable {
         this.postCodeInput.setText(user.getPostcode());
 
         //Find matching role
-        for(Role role : roles) {
+        for (Role role : roles) {
             if (role.id == user.getRoleId()) {
                 roleCombo.getSelectionModel().select(role);
                 break;
@@ -116,13 +116,13 @@ public class UserDetailController implements Initializable {
         Role role = this.roleCombo.getValue();
 
         //Valid all fields are not empty
-        if(Utils.isEmpty(username) || Utils.isEmpty(password) || Utils.isEmpty(firstName) || Utils.isEmpty(lastName) || Utils.isEmpty(mobile) || Utils.isEmpty(email) || Utils.isEmpty(address) || Utils.isEmpty(postcode)) {
+        if (Utils.isEmpty(username) || Utils.isEmpty(password) || Utils.isEmpty(firstName) || Utils.isEmpty(lastName) || Utils.isEmpty(mobile) || Utils.isEmpty(email) || Utils.isEmpty(address) || Utils.isEmpty(postcode)) {
             Utils.createAndShowAlert("Invalid fields", "Fields cannot be empty!", Alert.AlertType.ERROR);
             return;
         }
 
         boolean newUser = true;
-        if(user == null) {
+        if (user == null) {
             user = new User(username, password, email, mobile, firstName, lastName, address, postcode, role.id);
         } else {
             user.setPassword(password);
@@ -137,9 +137,9 @@ public class UserDetailController implements Initializable {
         }
 
         AddUserRequest response = requestManager.addUserRequest(new AddUserRequest(user));
-        if(response.isValid()) {
+        if (response.isValid()) {
             //Display message saying products was updated/added successfully
-            if(newUser) {
+            if (newUser) {
                 Utils.createAndShowAlert("Successfully created user", "User was successfully created!", Alert.AlertType.INFORMATION);
             } else {
                 Utils.createAndShowAlert("Successfully updated User", "User was successfully updated!", Alert.AlertType.INFORMATION);
@@ -150,20 +150,19 @@ public class UserDetailController implements Initializable {
         }
 
         //Failed
-        if(newUser)
+        if (newUser)
             user = null;
         Utils.createAndShowAlert("Failed Updating User", response.getErrorMessage(), Alert.AlertType.ERROR);
     }
 
     private class Role {
+        private int id;
+        private String roleName;
+
         public Role(int id, String roleName) {
             this.id = id;
             this.roleName = roleName;
         }
-
-        private int id;
-
-        private String roleName;
 
         public int getId() {
             return id;

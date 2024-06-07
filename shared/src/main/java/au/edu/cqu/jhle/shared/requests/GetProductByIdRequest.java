@@ -4,6 +4,9 @@ import au.edu.cqu.jhle.shared.database.DatabaseUtility;
 import au.edu.cqu.jhle.shared.models.Product;
 
 public class GetProductByIdRequest extends Request {
+    private Product product;
+    private int id;
+
     public GetProductByIdRequest(int id) {
         this.id = id;
     }
@@ -23,10 +26,6 @@ public class GetProductByIdRequest extends Request {
     public void setProductList(Product product) {
         this.product = product;
     }
-
-    private Product product;
-    
-    private int id;
 
     @Override
     public void doRequest(DatabaseUtility databaseUtility) {

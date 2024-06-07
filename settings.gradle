@@ -2,6 +2,5 @@ rootProject.name = 'mdhs'
 
 include ':shared'
 include ':client'
-include ':client-test'
 include ':server'
 

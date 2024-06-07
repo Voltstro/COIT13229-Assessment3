@@ -4,11 +4,11 @@ import au.edu.cqu.jhle.shared.database.DatabaseUtility;
 import au.edu.cqu.jhle.shared.models.Product;
 
 public class AddProductRequest extends Request {
+    private Product product;
+
     public AddProductRequest(Product product) {
         this.product = product;
     }
-
-    private Product product;
 
     public Product getProduct() {
         return product;

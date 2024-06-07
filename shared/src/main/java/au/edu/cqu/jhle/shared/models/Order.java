@@ -3,13 +3,19 @@ package au.edu.cqu.jhle.shared.models;
 import java.io.Serializable;
 
 public class Order implements Serializable {
+    private int id;
+    private int customerId;
+    private int statusId;
+    private String deliveryTime;
+    private Double totalCost;
+
     public Order(int customerId, int statusId, String deliveryTime, Double totalCost) {
         this.customerId = customerId;
         this.statusId = statusId;
         this.deliveryTime = deliveryTime;
         this.totalCost = totalCost;
     }
-    
+
     public Order(int id, int customerId, int statusId, String deliveryTime, Double totalCost) {
         this.id = id;
         this.customerId = customerId;
@@ -17,16 +23,6 @@ public class Order implements Serializable {
         this.deliveryTime = deliveryTime;
         this.totalCost = totalCost;
     }
-    
-    private int id;
-    
-    private int customerId;
-    
-    private int statusId;
-    
-    private String deliveryTime;
-    
-    private Double totalCost;
 
     public int getId() {
         return id;
@@ -67,14 +63,14 @@ public class Order implements Serializable {
     public void setTotalCost(Double totalCost) {
         this.totalCost = totalCost;
     }
-    
+
     @Override
     public String toString() {
         return "Order{" +
                 "id=" + id +
                 ", customer id=" + customerId + '\'' +
                 ", status id=" + statusId + '\'' +
-                ", delivery time=" + deliveryTime + '\''+
+                ", delivery time=" + deliveryTime + '\'' +
                 ", total cost=" + totalCost + '\'' +
                 '}';
     }

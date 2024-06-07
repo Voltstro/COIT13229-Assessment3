@@ -6,6 +6,8 @@ import au.edu.cqu.jhle.shared.models.Product;
 import java.util.List;
 
 public class GetProductsRequest extends Request {
+    private List<Product> productList;
+
     public GetProductsRequest() {
     }
 
@@ -20,8 +22,6 @@ public class GetProductsRequest extends Request {
     public void setProductList(List<Product> productList) {
         this.productList = productList;
     }
-
-    private List<Product> productList;
 
     @Override
     public void doRequest(DatabaseUtility databaseUtility) {

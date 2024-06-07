@@ -3,6 +3,17 @@ package au.edu.cqu.jhle.shared.models;
 import java.io.Serializable;
 
 public class User implements Serializable {
+    private int id;
+    private String username;
+    private String password;
+    private String email;
+    private String mobile;
+    private String firstName;
+    private String lastName;
+    private String address;
+    private String postcode;
+    private int roleId;
+
     public User(String username, String password, String email, String mobile, String firstName, String lastName, String address, String postcode, int roleId) {
         this.username = username;
         this.password = password;
@@ -27,26 +38,6 @@ public class User implements Serializable {
         this.postcode = postcode;
         this.roleId = roleId;
     }
-
-    private int id;
-
-    private String username;
-
-    private String password;
-
-    private String email;
-
-    private String mobile;
-
-    private String firstName;
-
-    private String lastName;
-
-    private String address;
-
-    private String postcode;
-
-    private int roleId;
 
     public int getId() {
         return id;

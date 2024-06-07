@@ -4,6 +4,16 @@ import au.edu.cqu.jhle.shared.database.DatabaseUtility;
 import au.edu.cqu.jhle.shared.models.User;
 
 public class RegisterUserRequest extends Request {
+    public String username;
+    private String password;
+    private String email;
+    private String phone;
+    private String firstName;
+    private String lastName;
+    private String address;
+    private String postcode;
+    private User user;
+
     public RegisterUserRequest(String username, String password, String email, String phone, String firstName, String lastName, String address, String postcode) {
         this.username = username;
         this.password = password;
@@ -14,24 +24,6 @@ public class RegisterUserRequest extends Request {
         this.address = address;
         this.postcode = postcode;
     }
-
-    public String username;
-
-    private String password;
-
-    private String email;
-
-    private String phone;
-
-    private String firstName;
-
-    private String lastName;
-
-    private String address;
-
-    private String postcode;
-
-    private User user;
 
     public String getUsername() {
         return username;
@@ -109,7 +101,7 @@ public class RegisterUserRequest extends Request {
     public void doRequest(DatabaseUtility databaseUtility) {
         try {
             User userCheck = databaseUtility.getUserByUsername(username);
-            if(userCheck != null) {
+            if (userCheck != null) {
                 setErrorMessage("Username is already in use.");
                 return;
             }

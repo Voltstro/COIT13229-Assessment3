@@ -2,17 +2,21 @@ package au.edu.cqu.jhle.shared.requests;
 
 import au.edu.cqu.jhle.shared.database.DatabaseUtility;
 import au.edu.cqu.jhle.shared.models.OrderLine;
+
 import java.util.List;
 
 public class GetOrderLinesForOrderRequest extends Request {
+    private List<OrderLine> orderLinesList;
+    private int orderId;
+
     public GetOrderLinesForOrderRequest(int orderId) {
         this.orderId = orderId;
     }
-    
+
     public List<OrderLine> getOrderLinesList() {
         return orderLinesList;
     }
-    
+
     public void setOrderLinesList(List<OrderLine> orderLinesList) {
         this.orderLinesList = orderLinesList;
     }
@@ -24,11 +28,7 @@ public class GetOrderLinesForOrderRequest extends Request {
     public void setOrderId(int orderId) {
         this.orderId = orderId;
     }
-    
-    private List<OrderLine> orderLinesList;
-    
-    private int orderId;
-    
+
     @Override
     public void doRequest(DatabaseUtility databaseUtility) {
         try {
@@ -38,7 +38,7 @@ public class GetOrderLinesForOrderRequest extends Request {
             setErrorMessage("Could not get order lines from database\n" + ex.getMessage());
             return;
         }
-        
+
         setValid(true);
     }
 }
