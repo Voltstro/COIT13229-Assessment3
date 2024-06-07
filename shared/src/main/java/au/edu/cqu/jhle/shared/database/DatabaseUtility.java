@@ -331,14 +331,14 @@ ON DUPLICATE KEY UPDATE
             System.out.println("SQLException: " + e.getMessage());
             System.out.println("SQLState: " + e.getSQLState());
             e.printStackTrace();
-	        throw new Exception("Failed to upsert product!");
+            throw new Exception("Failed to get products!");
         }
     }
     
     /**
      * Gets list of all delivery schedules 
      */
-    public ArrayList<DeliverySchedule> getDeliverySchedules() {
+    public ArrayList<DeliverySchedule> getDeliverySchedules() throws Exception {
         ArrayList<DeliverySchedule> deliverySchedules = new ArrayList<>();
         
         try {
@@ -363,7 +363,7 @@ ON DUPLICATE KEY UPDATE
             System.out.println("SQLException: " + e.getMessage());
             System.out.println("SQLState: " + e.getSQLState());
             e.printStackTrace();
-	    return null;
+	    throw new Exception("Failed to get schedules!");
         }
     }
 
