@@ -2,7 +2,9 @@ package au.edu.cqu.jhle.controllers;
 
 import au.edu.cqu.jhle.client.ClientApp;
 import au.edu.cqu.jhle.core.ClientRequestManager;
+import au.edu.cqu.jhle.core.Utils;
 import au.edu.cqu.jhle.shared.models.DeliverySchedule;
+import au.edu.cqu.jhle.shared.models.User;
 import au.edu.cqu.jhle.shared.requests.GetSchedulesRequest;
 
 import java.net.URL;
@@ -16,6 +18,8 @@ import java.io.IOException;
 import java.util.LinkedList;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
 import javafx.scene.input.MouseEvent;
 
 public class DeliverySchedulesController implements Initializable {
@@ -35,17 +39,25 @@ public class DeliverySchedulesController implements Initializable {
     @FXML
     private TableColumn<DeliverySchedule, Double> costColumn;
     
-    private ClientRequestManager requestManager;
+    @FXML
+    private Button newScheduleBtn;
     
     private LinkedList<DeliverySchedule> deliverySchedulesList = new LinkedList<>();
+    
+    private boolean isCustomer;
     
     /**
      * Initializes the controller class.
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        requestManager = ClientApp.getClientRequestManager();
+        ClientRequestManager requestManager = ClientApp.getClientRequestManager();
         
+        User user = requestManager.getLoggedInUser();
+        if (user.getRoleId() == 1) {
+            newScheduleBtn.setDisable(true);
+            isCustomer = true;
+        }
         //Get schedules
         try {
             GetSchedulesRequest getSchedulesRequest = new GetSchedulesRequest();
@@ -57,8 +69,17 @@ public class DeliverySchedulesController implements Initializable {
             
             populateTable();
             
-        } catch (IOException e) {
-            System.out.println("exception" + e);
+        } catch (Exception ex) {
+            System.out.println("Failed to get schedules!");
+            ex.printStackTrace();
+            
+            Utils.createAndShowAlert("Failed getting schedules", "Failed to get schedules", Alert.AlertType.ERROR);
+            
+            try {
+                ClientApp.setRoot("home");
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
     
@@ -96,7 +117,13 @@ public class DeliverySchedulesController implements Initializable {
         ClientApp.setRoot("deliveryScheduleDetail");
     }
     
+    @FXML
+    private void onBack() throws IOException {
+        ClientApp.setRoot("home");
+    }
+    
     private void openDeliveryScheduleDetailsPage(DeliverySchedule deliverySchedule) throws IOException {
+        if (isCustomer) return;
         //open details
         DeliveryScheduleDetailController controller = ClientApp.setRoot("deliveryScheduleDetail");
         //set selected schedule
