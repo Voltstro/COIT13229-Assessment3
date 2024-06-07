@@ -6,7 +6,6 @@ import au.edu.cqu.jhle.shared.models.User;
 
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 public class DatabaseUtility {
@@ -368,20 +367,15 @@ ON DUPLICATE KEY UPDATE
             System.out.println("SQLException: " + e.getMessage());
             System.out.println("SQLState: " + e.getSQLState());
             e.printStackTrace();
-	        throw new Exception("Failed to upsert product!");
+            throw new Exception("Failed to get products!");
         }
     }
     
     /**
      * Gets list of all delivery schedules 
      */
-    public LinkedList<DeliverySchedule> getDeliverySchedules() {
-        int id = 0;
-        String postcode = "";
-        String day = "";
-        Double cost = 0.0;
-        
-        LinkedList<DeliverySchedule> deliverySchedules = new LinkedList<>();
+    public ArrayList<DeliverySchedule> getDeliverySchedules() throws Exception {
+        ArrayList<DeliverySchedule> deliverySchedules = new ArrayList<>();
         
         try {
             Statement statement = connection.createStatement();
@@ -389,16 +383,15 @@ ON DUPLICATE KEY UPDATE
             ResultSet resultSet = statement.executeQuery(SELECT_ALL_DELIVERY_SCHEDULES_QUERY);
             
             while (resultSet.next()) {
-                id = resultSet.getInt(1);
-                postcode = resultSet.getString(2);
-                day = resultSet.getString(3);
-                cost = resultSet.getDouble(4);
+                int id = resultSet.getInt(1);
+                String postcode = resultSet.getString(2);
+                String day = resultSet.getString(3);
+                Double cost = resultSet.getDouble(4);
                 
                 deliverySchedules.add(new DeliverySchedule(id, postcode, day, cost));
 
             }
             
-            System.out.println(deliverySchedules);
             return deliverySchedules;
             
         } catch (SQLException e) {
@@ -406,7 +399,7 @@ ON DUPLICATE KEY UPDATE
             System.out.println("SQLException: " + e.getMessage());
             System.out.println("SQLState: " + e.getSQLState());
             e.printStackTrace();
-	    return null;
+	        throw new Exception("Failed to get schedules!");
         }
     }
 

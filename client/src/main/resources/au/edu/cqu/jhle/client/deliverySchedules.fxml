@@ -1,40 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TitledPane?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="au.edu.cqu.jhle.controllers.DeliverySchedulesController">
-   <children>
-      <VBox alignment="TOP_CENTER" prefHeight="325.0" prefWidth="600.0">
+<TitledPane animated="false" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="480.0" prefWidth="640.0" text="MDHS" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/21" fx:controller="au.edu.cqu.jhle.controllers.DeliverySchedulesController">
+  <content>
+    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
          <children>
-            <Label alignment="TOP_LEFT" text="Delivery Schedules">
+            <TableView fx:id="deliverySchedulesTable" layoutX="69.0" layoutY="49.0" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="318.0" prefWidth="500.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0">
+               <columns>
+                  <TableColumn fx:id="idColumn" prefWidth="105.0" text="Id" />
+                  <TableColumn fx:id="postcodeColumn" prefWidth="160.0" text="Postcode" />
+                  <TableColumn fx:id="dayColumn" prefWidth="160.0" text="Day" />
+                  <TableColumn fx:id="costColumn" prefWidth="160.0" text="Cost" />
+               </columns>
+            </TableView>
+            <Label layoutX="25.0" layoutY="14.0" text="Delivery Schedules" AnchorPane.leftAnchor="10.0">
                <font>
-                  <Font size="18.0" />
+                  <Font size="17.0" />
                </font>
             </Label>
-            <Button mnemonicParsing="false" onAction="#onAddNew" text="Add New Delivery Schedule">
-               <VBox.margin>
-                  <Insets left="400.0" top="-20.0" />
-               </VBox.margin>
-            </Button>
-            <TableView fx:id="deliverySchedulesTable" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="200.0" prefWidth="500.0">
-               <columns>
-                  <TableColumn fx:id="idColumn" prefWidth="78.0" text="Id" />
-                  <TableColumn fx:id="postcodeColumn" prefWidth="140.0" text="Postcode" />
-                  <TableColumn fx:id="dayColumn" prefWidth="140.0" text="Day" />
-                  <TableColumn fx:id="costColumn" prefWidth="140.0" text="Cost" />
-               </columns>
-               <VBox.margin>
-                  <Insets top="10.0" />
-               </VBox.margin>
-            </TableView>
-         </children>
-      </VBox>
-   </children>
-</AnchorPane>
+            <Button layoutX="25.0" layoutY="381.0" mnemonicParsing="false" onAction="#onBack" text="Back" AnchorPane.leftAnchor="10.0" />
+            <Button fx:id="newScheduleBtn" layoutX="553.0" layoutY="383.0" mnemonicParsing="false" onAction="#onAddNew" text="Add new Delivery Schedule" AnchorPane.rightAnchor="10.0" />
+         </children></AnchorPane>
+  </content>
+   <font>
+      <Font size="19.0" />
+   </font>
+</TitledPane>
