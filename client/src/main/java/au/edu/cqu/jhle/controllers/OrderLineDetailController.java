@@ -78,7 +78,7 @@ public class OrderLineDetailController implements Initializable {
         this.order = order;
         this.customerName = customerName;
 
-        orderLineTitleLabel.setText("New Order for Order (ID: %s)".formatted(order.getId()));
+        orderLineTitleLabel.setText("New Order Line for Order (ID: %s)".formatted(order.getId()));
     }
 
     public void setOrderLine(OrderLine orderLine, Order order, String customerName) {
