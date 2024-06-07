@@ -125,7 +125,6 @@ public class UserDetailController implements Initializable {
         if(user == null) {
             user = new User(username, password, email, mobile, firstName, lastName, address, postcode, role.id);
         } else {
-            user.setUsername(username);
             user.setPassword(password);
             user.setFirstName(firstName);
             user.setLastName(lastName);

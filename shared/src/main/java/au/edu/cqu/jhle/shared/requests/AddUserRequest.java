@@ -21,9 +21,12 @@ public class AddUserRequest extends Request {
     @Override
     public void doRequest(DatabaseUtility databaseUtility) {
         try {
-            User userCheck = databaseUtility.getUserByUsername(user.getUsername());
-            if(userCheck != null) {
-                throw new Exception("Username already in use");
+            //Need to check if username is in use if the request is for adding a new user
+            if(user.getId() == 0) {
+                User userCheck = databaseUtility.getUserByUsername(user.getUsername());
+                if(userCheck != null) {
+                    throw new Exception("Username already in use");
+                }
             }
 
             databaseUtility.upsertUser(user);
