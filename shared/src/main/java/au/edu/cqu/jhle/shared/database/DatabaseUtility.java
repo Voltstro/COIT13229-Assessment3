@@ -2,6 +2,7 @@ package au.edu.cqu.jhle.shared.database;
 
 import au.edu.cqu.jhle.shared.models.DeliverySchedule;
 import au.edu.cqu.jhle.shared.models.Order;
+import au.edu.cqu.jhle.shared.models.OrderLine;
 import au.edu.cqu.jhle.shared.models.Product;
 import au.edu.cqu.jhle.shared.models.User;
 
@@ -132,8 +133,10 @@ public class DatabaseUtility {
     
     //Queries
     private final String SELECT_ALL_PRODUCTS_QUERY = "SELECT id, name, quantity, unit, unit_price, ingredients FROM mdhs.products;";
+    private final String SELECT_PRODUCT_BY_ID_QUERY = "SELECT id, name, quantity, unit, unit_price, ingredients FROM mdhs.products WHERE id = ?;";
     private final String SELECT_ALL_DELIVERY_SCHEDULES_QUERY = "SELECT id, postcode, `day`, cost FROM mdhs.delivery_schedule;";
     private final String SELECT_ALL_ORDERS_QUERY = "SELECT id, customer_id, status_id, preferred_delivery_time, total_cost FROM mdhs.orders;";
+    private final String SELECT_ALL_ORDER_LINES_FOR_ORDER_QUERY = "SELECT id, product_id, order_id, quantity, cost FROM mdhs.order_lines WHERE order_id = ?;";
 
     private Connection connection;
     
@@ -405,6 +408,35 @@ ON DUPLICATE KEY UPDATE
     }
     
     /**
+     * Gets a product record by id
+     */
+    public Product getProductById(int id) throws Exception {
+        try {
+            PreparedStatement statement = connection.prepareStatement(SELECT_PRODUCT_BY_ID_QUERY);
+            statement.setInt(1, id);
+            
+            ResultSet result = statement.executeQuery();
+            
+            boolean any = result.next();
+            if (!any) return null;
+            
+            return new Product(
+                    result.getInt(1),
+                    result.getString(2),
+                    result.getInt(3),
+                    result.getString(4),
+                    result.getDouble(5),
+                    result.getString(6)
+            );
+        } catch (SQLException ex) {
+            System.out.println("Failed to get product!");
+            ex.printStackTrace();
+            
+            throw new Exception("Failed to get product!");
+        }
+    }
+    
+    /**
      * Gets list of all delivery schedules 
      */
     public ArrayList<DeliverySchedule> getDeliverySchedules() throws Exception {
@@ -439,7 +471,7 @@ ON DUPLICATE KEY UPDATE
     /**
      * Gets list of all orders
      */
-    public ArrayList<Order> getOrders() {
+    public ArrayList<Order> getOrders()throws Exception {
         ArrayList<Order> orders = new ArrayList<>();
         
         try {
@@ -463,7 +495,39 @@ ON DUPLICATE KEY UPDATE
             System.out.println("SQLException: " + e.getMessage());
             System.out.println("SQLState: " + e.getSQLState());
             e.printStackTrace();
-	    return null;
+	    throw new Exception("Failed to get orders!");
+        }
+    }
+    
+    /**
+     * Gets list of all order lines associated with the order
+     */
+    public ArrayList<OrderLine> getOrderLinesForOrder(int orderIdInput) throws Exception {
+        ArrayList<OrderLine> orderLines = new ArrayList<>();
+        
+        try {
+            PreparedStatement statement = connection.prepareStatement(SELECT_ALL_ORDER_LINES_FOR_ORDER_QUERY);
+            statement.setInt(1, orderIdInput);
+            
+            ResultSet resultSet = statement.executeQuery();
+            
+            while (resultSet.next()) {
+                int id = resultSet.getInt(1);
+                int productId = resultSet.getInt(2);
+                int orderId = resultSet.getInt(3);
+                int quantity = resultSet.getInt(4);
+                Double cost = resultSet.getDouble(5);
+                
+                orderLines.add(new OrderLine(id, productId, orderId, quantity, cost));
+            }
+            
+            return orderLines;
+        } catch (SQLException e) {
+            System.out.println("Connection Failed! Check output console");
+            System.out.println("SQLException: " + e.getMessage());
+            System.out.println("SQLState: " + e.getSQLState());
+            e.printStackTrace();
+	    throw new Exception("Failed to get order lines!");
         }
     }
 

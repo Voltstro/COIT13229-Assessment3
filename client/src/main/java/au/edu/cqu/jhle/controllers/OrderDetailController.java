@@ -56,7 +56,10 @@ public class OrderDetailController implements Initializable {
     
     @FXML
     private void onOpenOrderLines() throws IOException {
-        System.out.println("Opening order lines");
+        // open order details
+        OrderLinesController controller = ClientApp.setRoot("orderLines");
+        //set order
+        controller.setOrder(orderDetails, customerName);
     }
     
     public void setOrder(Order order, String customerName) {
