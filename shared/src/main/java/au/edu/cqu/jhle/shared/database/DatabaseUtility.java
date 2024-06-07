@@ -125,6 +125,13 @@ public class DatabaseUtility {
             	('4554', 'Wednesday', 8),
             	('4551', 'Thursday', 4),
             	('4550', 'Friday', 7);
+            """,
+
+            //Seed data for default admin user
+            """
+            INSERT INTO mdhs.users
+            (id, username, password, email, mobile, first_name, last_name, address, postcode, role_id)
+            VALUES(1, 'test', 'Testing123', 'test@test.com', '04 1234 1234', 'Test', 'Test', '21 Test St.', '4870', 2);
             """
     };
     
