@@ -15,7 +15,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import java.io.IOException;
-import java.util.LinkedList;
+import java.util.ArrayList;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Alert;
@@ -42,7 +42,7 @@ public class DeliverySchedulesController implements Initializable {
     @FXML
     private Button newScheduleBtn;
     
-    private LinkedList<DeliverySchedule> deliverySchedulesList = new LinkedList<>();
+    private ArrayList<DeliverySchedule> deliverySchedulesList = new ArrayList<>();
     
     private boolean isCustomer;
     
