@@ -110,6 +110,28 @@ public class ClientRequestManager {
             throw new RuntimeException(ex);
         }
     }
+    
+    public GetSchedulesRequest sendGetSchedulesRequest(GetSchedulesRequest request) throws IOException {
+        try {
+            outputStream.writeObject(request);
+            return (GetSchedulesRequest) inputStream.readObject();
+        } catch (ClassNotFoundException ex) {
+            //This should not happen
+            throw new RuntimeException(ex);
+        }
+    }
+    
+    public AddScheduleRequest upsertScheduleRequest(AddScheduleRequest request) {
+        try {
+            outputStream.writeObject(request);
+            return (AddScheduleRequest) inputStream.readObject();
+        } catch (ClassNotFoundException ex) {
+            //This should not happen
+            throw new RuntimeException(ex);
+        } catch (IOException ex) {
+            throw new RuntimeException(ex);
+        }
+    }
 
     public byte[] encrypt(String message) {
        try {
