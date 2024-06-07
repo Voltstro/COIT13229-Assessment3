@@ -91,7 +91,7 @@ public class DeliverySchedulesController implements Initializable {
         dayColumn.setCellValueFactory(new PropertyValueFactory<>("day"));
         costColumn.setCellValueFactory(new PropertyValueFactory<>("cost"));
         
-        //Convert LinkedList to an ObservableList
+        //Convert ArrayList to an ObservableList
         ObservableList<DeliverySchedule> observableDeliverySchedulesList = FXCollections.observableArrayList(deliverySchedulesList);
         
         //Set the items for the TableView
