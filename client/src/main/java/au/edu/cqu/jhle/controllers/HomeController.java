@@ -42,7 +42,7 @@ public class HomeController implements Initializable {
     
     @FXML
     private void onOrdersClick() throws IOException {
-        ClientApp.setRoot("home");
+        ClientApp.setRoot("orders");
     }
     
     @FXML
