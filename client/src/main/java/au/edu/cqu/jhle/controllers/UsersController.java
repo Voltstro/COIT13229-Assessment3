@@ -1,7 +1,9 @@
 package au.edu.cqu.jhle.controllers;
 
 import au.edu.cqu.jhle.client.ClientApp;
+import au.edu.cqu.jhle.core.ClientRequestManager;
 import au.edu.cqu.jhle.core.Utils;
+import au.edu.cqu.jhle.shared.models.Product;
 import au.edu.cqu.jhle.shared.models.User;
 import au.edu.cqu.jhle.shared.requests.GetUsersRequest;
 import javafx.collections.FXCollections;
@@ -86,28 +88,33 @@ public class UsersController implements Initializable {
         // Add listener on row click
         usersTable.setOnMouseClicked((MouseEvent event) -> {
             if (event.getClickCount() == 1) {
-                UserWithRole selectedProduct = usersTable.getSelectionModel().getSelectedItem();
-                /*
-                if (selectedProduct != null) {
+                UserWithRole selectedUser = usersTable.getSelectionModel().getSelectedItem();
+                if (selectedUser != null) {
                     try {
-                        openProductDetailsPage(selectedProduct);
+                        openUserDetailPage(selectedUser.user);
                     } catch (IOException ex) {
                         ex.printStackTrace();
                     }
                 }
-                */
             }
         });
     }
 
     @FXML
-    private void onAddNew() {
-
+    private void onAddNew() throws IOException {
+        ClientApp.setRoot("userDetail");
     }
 
     @FXML
     private void onBack() throws IOException {
         ClientApp.setRoot("home");
+    }
+
+    public void openUserDetailPage(User user) throws IOException {
+        //open user details
+        UserDetailController controller = ClientApp.setRoot("userDetail");
+        //set selected user
+        controller.setUser(user);
     }
 
     public class UserWithRole {
