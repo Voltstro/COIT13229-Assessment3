@@ -6,6 +6,8 @@ import au.edu.cqu.jhle.core.Utils;
 import au.edu.cqu.jhle.shared.models.Order;
 import au.edu.cqu.jhle.shared.models.User;
 import au.edu.cqu.jhle.shared.requests.AddOrderRequest;
+import au.edu.cqu.jhle.shared.requests.GetOrderByIdRequest;
+import au.edu.cqu.jhle.shared.requests.GetUserByIdRequest;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -55,6 +57,10 @@ public class OrderDetailController implements Initializable {
         customerInput.setText(user.getFirstName() + " " + user.getLastName());
         customerId = user.getId();
         openOrderLines.setDisable(true);
+        
+        this.customerInput.setDisable(true);
+        this.totalCostInput.setDisable(true);
+        this.totalCostInput.setText("0.0");
     }
     
     @FXML
@@ -106,14 +112,51 @@ public class OrderDetailController implements Initializable {
         //send response
         AddOrderRequest response = requestManager.upsertOrderRequest(new AddOrderRequest(orderDetails));
         if (response.isValid()) {
+            //Update order object from db
+            try {
+                GetOrderByIdRequest getOrderByIdRequest = requestManager.getOrderByIdRequest(new GetOrderByIdRequest(response.getId()));
+                orderDetails = getOrderByIdRequest.getOrder();
+            } catch (Exception ex) {
+                System.out.println("Failed to get order by id!");
+                ex.printStackTrace();
+
+                Utils.createAndShowAlert("Failed getting order by id!", "Failed to get order by id!", Alert.AlertType.ERROR);
+                try {
+                    ClientApp.setRoot("orders");
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            
             //Display message saying order was updated/added successfully
             if (newOrder) {
+                this.openOrderLines.setDisable(false);
                 Utils.createAndShowAlert("Successfully created order", "Order was successfully created!", Alert.AlertType.INFORMATION);
+
+                //get customer name from id
+                try {
+                    //Get user by id
+                    GetUserByIdRequest getUserByIdRequest = requestManager.getUserByIdRequest(new GetUserByIdRequest(orderDetails.getCustomerId()));
+                    User customer = getUserByIdRequest.getUser();
+
+                    this.customerName = customer.getFirstName() + " " + customer.getLastName();
+
+                } catch (Exception ex) {
+                    System.out.println("Failed to get user for order!");
+                    ex.printStackTrace();
+
+                    Utils.createAndShowAlert("Failed getting user for order!", "Failed to get user for order!", Alert.AlertType.ERROR);
+                    try {
+                        ClientApp.setRoot("orders");
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
             } else {
                 Utils.createAndShowAlert("Successfully updated order", "Order was successfully updated!", Alert.AlertType.INFORMATION);
             }
-
-            ClientApp.setRoot("orders");
+            
+            populateFields();
             return;
         }
 

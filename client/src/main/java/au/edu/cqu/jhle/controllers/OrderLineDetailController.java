@@ -9,10 +9,14 @@ import au.edu.cqu.jhle.shared.models.Product;
 import au.edu.cqu.jhle.shared.requests.AddOrderLineRequest;
 import au.edu.cqu.jhle.shared.requests.GetProductsRequest;
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -55,6 +59,18 @@ public class OrderLineDetailController implements Initializable {
         getProducts();
         
         this.orderLine = null;
+        this.costInput.setDisable(true);
+        
+        this.quantityInput.textProperty().addListener(new ChangeListener<String>() {
+           @Override
+           public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+               calculateCost();
+           }
+        });
+        
+        this.productCombo.setOnAction(event -> {
+            calculateCost();
+        });
     }
     
     public void setOrder(Order order, String customerName) {
@@ -102,43 +118,72 @@ public class OrderLineDetailController implements Initializable {
         controller.setOrder(order, customerName);
     }
     
-    private void saveOrderLine() throws IOException {
-        //ensure fields are not empty
-        if (Utils.isEmpty(quantityInput)) {
-            Utils.createAndShowAlert("Invalid fields", "Fields cannot be empty!", Alert.AlertType.ERROR);
+    private void calculateCost() {
+         if (Utils.isEmpty(quantityInput)) {
             return;
         }
         
-        //get field details
-        int quantity = Integer.parseInt(quantityInput.getText());
-        Double cost = Double.parseDouble(costInput.getText());
-        Product product = this.productCombo.getValue();
-        
-        boolean newOrderLine = true;
-        if (orderLine == null) {
-            orderLine = new OrderLine(product.getId(), order.getId(), quantity, cost);
-        } else {
-            orderLine.setQuantity(quantity);
-            orderLine.setCost(cost);
-            orderLine.setProductId(product.getId());
-            newOrderLine = false;
-        }
-        
-        AddOrderLineRequest response = requestManager.upsertOrderLineRequest(new AddOrderLineRequest(orderLine));
-        if (response.isValid()) {
-            //Display message saying order line was update/added successfully
-            if (newOrderLine) {
-                Utils.createAndShowAlert("Successfully created order line", "Order line was successfully created!", Alert.AlertType.INFORMATION);
-            } else {
-                Utils.createAndShowAlert("Successfully update order line", "Order line was successfully updated!", Alert.AlertType.INFORMATION);
-            }
+        try {
+            //get field details
+            int quantity = Integer.parseInt(quantityInput.getText());
+
+            Product product = this.productCombo.getValue();
             
-            returnToList();
-            return;
+            Double costBeforeGST = quantity * product.getPrice();
+            Double GST = costBeforeGST * 0.1;
+            Double unformattedCost = costBeforeGST + GST;
+            
+            BigDecimal formattedCost = new BigDecimal(unformattedCost).setScale(2, RoundingMode.HALF_UP);
+            Double cost = formattedCost.doubleValue();
+            this.costInput.setText(cost.toString());
+        } catch (NumberFormatException ex) {
+            //Number formatting error
+            Utils.createAndShowAlert("Invalid fields", "Quantity must be a valid number!", Alert.AlertType.ERROR);
         }
-        
-        //Failed
-        Utils.createAndShowAlert("Failed  updating order line", response.getErrorMessage(), Alert.AlertType.ERROR);
+    }
+    
+    private void saveOrderLine() throws IOException {
+        try {
+            //ensure fields are not empty
+            if (Utils.isEmpty(quantityInput)) {
+                Utils.createAndShowAlert("Invalid fields", "Fields cannot be empty!", Alert.AlertType.ERROR);
+                return;
+            }
+
+            //get field details
+            int quantity = Integer.parseInt(quantityInput.getText());
+            Double cost = Double.parseDouble(costInput.getText());
+            Product product = this.productCombo.getValue();
+
+            boolean newOrderLine = true;
+            if (orderLine == null) {
+                orderLine = new OrderLine(product.getId(), order.getId(), quantity, cost);
+            } else {
+                orderLine.setQuantity(quantity);
+                orderLine.setCost(cost);
+                orderLine.setProductId(product.getId());
+                newOrderLine = false;
+            }
+
+            AddOrderLineRequest response = requestManager.upsertOrderLineRequest(new AddOrderLineRequest(orderLine));
+            if (response.isValid()) {
+                //Display message saying order line was update/added successfully
+                if (newOrderLine) {
+                    Utils.createAndShowAlert("Successfully created order line", "Order line was successfully created!", Alert.AlertType.INFORMATION);
+                } else {
+                    Utils.createAndShowAlert("Successfully update order line", "Order line was successfully updated!", Alert.AlertType.INFORMATION);
+                }
+
+                returnToList();
+                return;
+            }
+
+            //Failed
+            Utils.createAndShowAlert("Failed  updating order line", response.getErrorMessage(), Alert.AlertType.ERROR);
+        } catch (NumberFormatException ex) {
+            //Number formatting error
+            Utils.createAndShowAlert("Invalid fields", "Quantity must be a valid number!", Alert.AlertType.ERROR);
+        }
     }
     
     private void getProducts() {

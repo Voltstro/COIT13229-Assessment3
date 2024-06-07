@@ -23,7 +23,7 @@ public class AddOrderLineRequest extends Request {
         try {
             databaseUtility.upsertOrderLine(orderLine);
         } catch (Exception ex) {
-            setErrorMessage("Failed tp upsert order line\n" + ex.getMessage());
+            setErrorMessage("Failed to upsert order line\n" + ex.getMessage());
             return;
         }
         

@@ -226,6 +226,18 @@ public class ClientRequestManager {
             throw new RuntimeException(ex);
         }
     }
+    
+    public GetOrderByIdRequest getOrderByIdRequest(GetOrderByIdRequest request) throws IOException {
+        try {
+            outputStream.writeObject(request);
+            return (GetOrderByIdRequest) inputStream.readObject();
+        } catch (ClassNotFoundException ex) {
+            //This should not happen
+            throw new RuntimeException(ex);
+        } catch (IOException ex) {
+            throw new RuntimeException(ex);
+        }
+    }
 
     public byte[] encrypt(String message) {
        try {

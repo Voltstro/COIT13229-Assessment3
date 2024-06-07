@@ -146,6 +146,7 @@ public class DatabaseUtility {
     private final String SELECT_PRODUCT_BY_ID_QUERY = "SELECT id, name, quantity, unit, unit_price, ingredients FROM mdhs.products WHERE id = ?;";
     private final String SELECT_ALL_DELIVERY_SCHEDULES_QUERY = "SELECT id, postcode, `day`, cost FROM mdhs.delivery_schedule;";
     private final String SELECT_ALL_ORDERS_QUERY = "SELECT id, customer_id, status_id, preferred_delivery_time, total_cost FROM mdhs.orders;";
+    private final String SELECT_ORDER_BY_ID_QUERY = "SELECT id, customer_id, status_id, preferred_delivery_time, total_cost FROM mdhs.orders WHERE id = ?;";
     private final String SELECT_ALL_ORDER_LINES_FOR_ORDER_QUERY = "SELECT id, product_id, order_id, quantity, cost FROM mdhs.order_lines WHERE order_id = ?;";
 
     private Connection connection;
@@ -544,7 +545,7 @@ ON DUPLICATE KEY UPDATE
     /**
      * Upserts an order
      */
-    public void upsertOrder(Order order) throws Exception {
+    public int upsertOrder(Order order) throws Exception {
         try {
             PreparedStatement statement = connection.prepareStatement("""
                 INSERT INTO orders
@@ -563,6 +564,19 @@ ON DUPLICATE KEY UPDATE
             statement.setDouble(5, order.getTotalCost());
             
             statement.execute();
+            
+            Integer id = order.getId();
+            
+            if (order.getId() == 0) {
+                //Get last inserted id as new order's id
+                Statement idStatement = connection.createStatement();
+                ResultSet idResult = idStatement.executeQuery("SELECT LAST_INSERT_ID() FROM orders LIMIT 1;");
+
+                idResult.next();
+                id = idResult.getInt(1);
+            }
+            
+            return id;
         } catch (SQLException ex) {
             System.out.println("Failed to upsert order");
             ex.printStackTrace();
@@ -593,11 +607,76 @@ ON DUPLICATE KEY UPDATE
             statement.setDouble(5, orderLine.getCost());
             
             statement.execute();
+            
+            //Calculate total cost of all order lines in order
+            List<OrderLine> orderLines = getOrderLinesForOrder(orderLine.getOrderId());
+            Double totalCost = 0.0;
+            
+            for (OrderLine line : orderLines) {
+                totalCost += line.getCost();
+            }
+            
+            //Update total cost of order
+            updateOrderCost(orderLine.getOrderId(), totalCost);
+
         } catch (SQLException ex) {
             System.out.println("Failed to upsert order line");
             ex.printStackTrace();
             
             throw new Exception("Failed to upsert order line!");
+        }
+    }
+    
+    /**
+     * Updates an order's cost
+     */
+    public void updateOrderCost(int orderId, Double cost) throws Exception {
+        try {
+            PreparedStatement statement = connection.prepareStatement("""
+                UPDATE orders
+                SET total_cost = ?
+                WHERE id = ?;                                                          
+            """);
+            
+            statement.setDouble(1, cost);
+            statement.setInt(2, orderId);
+            
+            statement.execute();
+        } catch (SQLException ex) {
+            System.out.println("Failed to update order cost");
+            ex.printStackTrace();
+            
+            throw new Exception("Failed to update order cost!");
+        }
+    }
+    
+    /**
+     * Gets order by id 
+     */
+    public Order getOrderById(int id) throws Exception {        
+        try {
+            PreparedStatement statement = connection.prepareStatement(SELECT_ORDER_BY_ID_QUERY);
+            statement.setInt(1, id);
+            
+            ResultSet result = statement.executeQuery();
+            
+            boolean any = result.next();
+            if (!any) return null;
+            
+            
+            return new Order(
+                    result.getInt(1),
+                    result.getInt(2),
+                    result.getInt(3),
+                    result.getString(4),
+                    result.getDouble(5)
+            );
+        } catch (SQLException e) {
+            System.out.println("Connection Failed! Check output console");
+            System.out.println("SQLException: " + e.getMessage());
+            System.out.println("SQLState: " + e.getSQLState());
+            e.printStackTrace();
+	    throw new Exception("Failed to get order!");
         }
     }
 

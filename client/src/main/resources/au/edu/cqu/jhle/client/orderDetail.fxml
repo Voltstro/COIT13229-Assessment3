@@ -27,7 +27,7 @@
                      </VBox.margin>
                   </Label>
                   <TextField fx:id="deliveryTimeInput" minWidth="-Infinity" />
-                  <Label text="Total Cost">
+                  <Label text="Total Cost (Includes GST)">
                      <VBox.margin>
                         <Insets top="10.0" />
                      </VBox.margin>
