@@ -132,6 +132,16 @@ public class ClientRequestManager {
             throw new RuntimeException(ex);
         }
     }
+    
+    public GetOrdersRequest getOrdersRequest(GetOrdersRequest request) throws IOException {
+        try {
+            outputStream.writeObject(request);
+            return (GetOrdersRequest) inputStream.readObject();
+        } catch (ClassNotFoundException ex) {
+            //This should not happen
+            throw new RuntimeException(ex);
+        }
+    }
 
     public GetUsersRequest getUsersRequest(GetUsersRequest request) throws IOException {
         try {
@@ -149,6 +159,18 @@ public class ClientRequestManager {
         try {
             outputStream.writeObject(request);
             return (AddUserRequest) inputStream.readObject();
+        } catch (ClassNotFoundException ex) {
+            //This should not happen
+            throw new RuntimeException(ex);
+        } catch (IOException ex) {
+            throw new RuntimeException(ex);
+        }
+    }
+    
+    public GetUserByIdRequest getUserByIdRequest(GetUserByIdRequest request) throws IOException {
+        try {
+            outputStream.writeObject(request);
+            return (GetUserByIdRequest) inputStream.readObject();
         } catch (ClassNotFoundException ex) {
             //This should not happen
             throw new RuntimeException(ex);

@@ -1,6 +1,7 @@
 package au.edu.cqu.jhle.shared.database;
 
 import au.edu.cqu.jhle.shared.models.DeliverySchedule;
+import au.edu.cqu.jhle.shared.models.Order;
 import au.edu.cqu.jhle.shared.models.Product;
 import au.edu.cqu.jhle.shared.models.User;
 
@@ -132,6 +133,7 @@ public class DatabaseUtility {
     //Queries
     private final String SELECT_ALL_PRODUCTS_QUERY = "SELECT id, name, quantity, unit, unit_price, ingredients FROM mdhs.products;";
     private final String SELECT_ALL_DELIVERY_SCHEDULES_QUERY = "SELECT id, postcode, `day`, cost FROM mdhs.delivery_schedule;";
+    private final String SELECT_ALL_ORDERS_QUERY = "SELECT id, customer_id, status_id, preferred_delivery_time, total_cost FROM mdhs.orders;";
 
     private Connection connection;
     
@@ -245,6 +247,37 @@ ON DUPLICATE KEY UPDATE
         try {
             PreparedStatement statement = connection.prepareStatement("SELECT id, username, password, email, mobile, first_name, last_name, address, postcode, role_id FROM mdhs.users WHERE username = ?");
             statement.setString(1, username);
+
+            ResultSet result = statement.executeQuery();
+            boolean any = result.next();
+            if (!any) return null;
+
+            return new User(
+                    result.getInt(1),
+                    result.getString(2),
+                    result.getString(3),
+                    result.getString(4),
+                    result.getString(5),
+                    result.getString(6),
+                    result.getString(7),
+                    result.getString(8),
+                    result.getString(9),
+                    result.getInt(10));
+        } catch (SQLException ex) {
+            System.out.println("Failed to get user!");
+            ex.printStackTrace();
+
+            throw new Exception("Failed to get user!");
+        }
+    }
+    
+    /**
+     * Gets user record by id 
+     */
+    public User getUserById(int id) throws Exception {
+        try {
+            PreparedStatement statement = connection.prepareStatement("SELECT id, username, password, email, mobile, first_name, last_name, address, postcode, role_id FROM mdhs.users WHERE id = ?");
+            statement.setInt(1, id);
 
             ResultSet result = statement.executeQuery();
             boolean any = result.next();
@@ -400,6 +433,37 @@ ON DUPLICATE KEY UPDATE
             System.out.println("SQLState: " + e.getSQLState());
             e.printStackTrace();
 	        throw new Exception("Failed to get schedules!");
+        }
+    }
+    
+    /**
+     * Gets list of all orders
+     */
+    public ArrayList<Order> getOrders() {
+        ArrayList<Order> orders = new ArrayList<>();
+        
+        try {
+            Statement statement = connection.createStatement();
+            
+            ResultSet resultSet = statement.executeQuery(SELECT_ALL_ORDERS_QUERY);
+            
+            while (resultSet.next()) {
+                int id = resultSet.getInt(1);
+                int customerId = resultSet.getInt(2);
+                int statusId = resultSet.getInt(3);
+                String deliveryTime = resultSet.getString(4);
+                Double totalCost = resultSet.getDouble(5);
+                
+                orders.add(new Order(id, customerId, statusId, deliveryTime, totalCost));
+            }
+            
+            return orders;
+        } catch (SQLException e) {
+            System.out.println("Connection Failed! Check output console");
+            System.out.println("SQLException: " + e.getMessage());
+            System.out.println("SQLState: " + e.getSQLState());
+            e.printStackTrace();
+	    return null;
         }
     }
 
