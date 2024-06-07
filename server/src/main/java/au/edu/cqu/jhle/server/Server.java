@@ -135,7 +135,11 @@ public class Server {
                             byte[] passwordEncrpted = loginRequest.getPassword();
                             String password = decrypt(passwordEncrpted);
                             if (!user.getPassword().equals(password))
+                            {
+                                loginRequest.setValid(false);
+                                loginRequest.setErrorMessage("Invalid username and/or password!");
                                 throw new Exception("Password invalid!");
+                            }
 
                             //Set connection user to this one
                             connectionUser = user;
