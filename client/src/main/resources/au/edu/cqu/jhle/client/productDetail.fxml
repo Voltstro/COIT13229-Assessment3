@@ -3,85 +3,60 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.TitledPane?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-
-<ScrollPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="506.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="au.edu.cqu.jhle.controllers.ProductDetailController">
-   <content>
-      <AnchorPane id="AnchorPane" prefHeight="488.0" prefWidth="600.0">
+<TitledPane animated="false" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="480.0" prefWidth="640.0" text="MDHS" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/21" fx:controller="au.edu.cqu.jhle.controllers.ProductDetailController">
+  <content>
+    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
          <children>
-            <VBox alignment="TOP_CENTER" prefHeight="50.0" prefWidth="600.0">
+            <VBox layoutX="80.0" layoutY="49.0" prefHeight="290.0" prefWidth="530.0" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0">
                <children>
-                  <Label alignment="TOP_LEFT" text="Product Details">
-                     <font>
-                        <Font size="18.0" />
-                     </font>
+                  <Label text="Name">
                      <VBox.margin>
                         <Insets top="10.0" />
                      </VBox.margin>
                   </Label>
+                  <TextField fx:id="nameInput" minWidth="-Infinity" />
+                  <Label text="Quantity">
+                     <VBox.margin>
+                        <Insets top="10.0" />
+                     </VBox.margin>
+                  </Label>
+                  <TextField fx:id="quantityInput" minWidth="-Infinity" />
+                  <Label text="Unit">
+                     <VBox.margin>
+                        <Insets top="10.0" />
+                     </VBox.margin>
+                  </Label>
+                  <TextField fx:id="unitInput" minWidth="-Infinity" />
+                  <Label text="Unit price">
+                     <VBox.margin>
+                        <Insets top="10.0" />
+                     </VBox.margin>
+                  </Label>
+                  <TextField fx:id="unitPriceInput" minWidth="-Infinity" />
+                  <Label text="Ingredients">
+                     <VBox.margin>
+                        <Insets top="10.0" />
+                     </VBox.margin>
+                  </Label>
+                  <TextField fx:id="ingredientsInput" minWidth="-Infinity" />
                </children>
             </VBox>
-            <VBox layoutY="60.0" prefHeight="200.0" prefWidth="600.0">
-               <children>
-                  <Label text="Id:" />
-                  <TextField fx:id="idInput" editable="false" maxWidth="-Infinity" minWidth="-Infinity" prefHeight="25.0" prefWidth="97.0" />
-                  <Label text="Name:">
-                     <VBox.margin>
-                        <Insets top="10.0" />
-                     </VBox.margin>
-                  </Label>
-                  <TextField fx:id="nameInput" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="500.0" promptText="Please enter the product name" />
-                  <Label text="Quantity:">
-                     <VBox.margin>
-                        <Insets top="10.0" />
-                     </VBox.margin>
-                  </Label>
-                  <TextField fx:id="quantityInput" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="500.0" promptText="Please enter the product quantity" />
-                  <Label text="Unit:">
-                     <VBox.margin>
-                        <Insets top="10.0" />
-                     </VBox.margin>
-                  </Label>
-                  <TextField fx:id="unitInput" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="500.0" promptText="Please enter the product unit" />
-                  <Label text="Unit price:">
-                     <VBox.margin>
-                        <Insets top="10.0" />
-                     </VBox.margin>
-                  </Label>
-                  <TextField fx:id="unitPriceInput" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="500.0" promptText="Please enter the product unit price" />
-                  <Label text="Ingredients:">
-                     <VBox.margin>
-                        <Insets top="10.0" />
-                     </VBox.margin>
-                  </Label>
-                  <TextField fx:id="ingredientsInput" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="500.0" promptText="Please enter the product ingredients" />
-               </children>
-               <padding>
-                  <Insets left="40.0" />
-               </padding>
-            </VBox>
-            <HBox alignment="CENTER" layoutY="379.0" prefHeight="50.0" prefWidth="600.0">
-               <children>
-                  <Button mnemonicParsing="false" onAction="#onReturnToList" text="Return to list">
-                     <HBox.margin>
-                        <Insets right="75.0" />
-                     </HBox.margin>
-                  </Button>
-                  <Button mnemonicParsing="false" onAction="#onSaveProduct" prefWidth="125.0" text="Save Changes" />
-                  <Button mnemonicParsing="false" onAction="#onRemoveProduct" text="Remove Product">
-                     <HBox.margin>
-                        <Insets left="75.0" />
-                     </HBox.margin>
-                  </Button>
-               </children>
-            </HBox>
-         </children>
-      </AnchorPane>
-   </content>
-</ScrollPane>
+            <Label fx:id="productTitleLabel" layoutX="40.0" layoutY="21.0" text="New Product" AnchorPane.leftAnchor="50.0" AnchorPane.topAnchor="10.0">
+               <font>
+                  <Font size="16.0" />
+               </font>
+            </Label>
+            <Button fx:id="onSaveProduct" layoutX="80.0" layoutY="371.0" mnemonicParsing="false" onAction="#onSaveProduct" text="Save" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="50.0" />
+            <Button layoutX="514.0" layoutY="374.0" mnemonicParsing="false" onAction="#onReturnToList" text="Cancel" AnchorPane.bottomAnchor="20.0" AnchorPane.rightAnchor="50.0" />
+         </children></AnchorPane>
+  </content>
+   <font>
+      <Font size="19.0" />
+   </font>
+</TitledPane>

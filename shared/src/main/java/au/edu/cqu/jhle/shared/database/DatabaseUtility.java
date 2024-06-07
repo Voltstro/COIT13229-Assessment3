@@ -5,6 +5,7 @@ import au.edu.cqu.jhle.shared.models.Product;
 import au.edu.cqu.jhle.shared.models.User;
 
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.LinkedList;
 
 public class DatabaseUtility {
@@ -306,34 +307,24 @@ ON DUPLICATE KEY UPDATE
     /**
      * Gets list of all products 
      */
-    public LinkedList<Product> getProducts() {
-        int id = 0;
-        String name = "";
-        int quantity = 0;
-        String unit = "";
-        Double unitPrice = 0.0;
-        String ingredients = "";
-        
-        LinkedList<Product> products = new LinkedList<>();
+    public ArrayList<Product> getProducts() throws Exception {
+        ArrayList<Product> products = new ArrayList<>();
         
         try {
             Statement statement = connection.createStatement();
-            
             ResultSet resultSet = statement.executeQuery(SELECT_ALL_PRODUCTS_QUERY);
             
             while (resultSet.next()) {
-                id = resultSet.getInt(1);
-                name = resultSet.getString(2);
-                quantity = resultSet.getInt(3);
-                unit = resultSet.getString(4);
-                unitPrice = resultSet.getDouble(5);
-                ingredients = resultSet.getString(6);
+                int id = resultSet.getInt(1);
+                String name = resultSet.getString(2);
+                int quantity = resultSet.getInt(3);
+                String unit = resultSet.getString(4);
+                Double unitPrice = resultSet.getDouble(5);
+                String ingredients = resultSet.getString(6);
                 
                 products.add(new Product(id, name, quantity, unit, unitPrice, ingredients));
-
             }
-            
-            System.out.println(products);
+
             return products;
             
         } catch (SQLException e) {
@@ -341,7 +332,7 @@ ON DUPLICATE KEY UPDATE
             System.out.println("SQLException: " + e.getMessage());
             System.out.println("SQLState: " + e.getSQLState());
             e.printStackTrace();
-	    return null;
+	        throw new Exception("Failed to upsert product!");
         }
     }
     

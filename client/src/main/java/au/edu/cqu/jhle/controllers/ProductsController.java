@@ -1,16 +1,24 @@
 package au.edu.cqu.jhle.controllers;
 
 import au.edu.cqu.jhle.client.ClientApp;
+import au.edu.cqu.jhle.core.ClientRequestManager;
+import au.edu.cqu.jhle.core.Utils;
 import au.edu.cqu.jhle.shared.models.Product;
 
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
+
+import au.edu.cqu.jhle.shared.models.User;
+import au.edu.cqu.jhle.shared.requests.GetProductsRequest;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -35,26 +43,46 @@ public class ProductsController implements Initializable {
     
     @FXML
     private TableColumn<Product, Double> unitPriceColumn;
+
+    @FXML
+    private Button newProductBtn;
     
-    private ArrayList<Product> productsList = new ArrayList<>();
+    private List<Product> productsList = new ArrayList<>();
+
+    private boolean isCustomer;
 
     /**
      * Initializes the controller class.
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO
-        
-        // Sample data to test
-        productsList.add(new Product(1, "test", 5, "Litres", 25.50, "ingredients"));
-        productsList.add(new Product(2, "another product", 250, "ml", 13.0, "test"));
+        ClientRequestManager requestManager = ClientApp.getClientRequestManager();
+        User user = requestManager.getLoggedInUser();
+        if(user.getRoleId() == 1) {
+            newProductBtn.setDisable(true);
+            isCustomer = true;
+        }
+
+        try {
+            GetProductsRequest  getProductsRequest = requestManager.getProductsRequest(new GetProductsRequest());
+            productsList = getProductsRequest.getProductList();
+        } catch (Exception ex) {
+            System.out.println("Failed to get products!");
+            ex.printStackTrace();
+
+            Utils.createAndShowAlert("Failed getting products", "Failed to get products!", Alert.AlertType.ERROR);
+            try {
+                ClientApp.setRoot("home");
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            return;
+        }
         
         populateTable();
     }
     
     private void populateTable() {
-        System.out.println(productsList.toString());
-        
         // Configure columns
         idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
@@ -87,8 +115,15 @@ public class ProductsController implements Initializable {
     private void onAddNew() throws IOException {
         ClientApp.setRoot("productDetail");
     }
+
+    @FXML
+    private void onBack() throws IOException {
+        ClientApp.setRoot("home");
+    }
     
     private void openProductDetailsPage(Product product) throws IOException {
+        if(isCustomer) return;
+
         //open product details
         ProductDetailController controller = ClientApp.setRoot("productDetail");
         //set selected product
